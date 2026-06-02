@@ -1,0 +1,41 @@
+import React, { useState } from "react";
+
+export default function Newsletter() {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email) { setSubmitted(true); setEmail(""); }
+  };
+
+  return (
+    <section className="container" style={{ marginBottom: "70px" }}>
+      <div className="newsletter-section">
+        <div className="newsletter-content">
+          <h3>Stay in the Loop with WEARLY</h3>
+          <p>Subscribe for exclusive drops, style edits, and members-only offers delivered straight to your inbox.</p>
+        </div>
+        <div>
+          {submitted ? (
+            <div className="success-card">
+              <h4>You're in! 🎉</h4>
+              <p>Welcome to the WEARLY family. Expect beautiful things.</p>
+            </div>
+          ) : (
+            <form className="newsletter-form" onSubmit={handleSubmit}>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit">Subscribe</button>
+            </form>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}

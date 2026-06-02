@@ -1,0 +1,213 @@
+.about-layout { padding: 30px 0 60px; }
+
+.about-hero {
+  background: linear-gradient(135deg, #FAF2F3 0%, #F5E5E7 100%);
+  border-radius: 32px;
+  padding: 70px 40px;
+  text-align: center;
+  margin-bottom: 60px;
+  box-shadow: 0 12px 34px rgba(47, 47, 47, 0.05);
+}
+
+.about-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 4vw, 3.5rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.about-hero p { max-width: 680px; margin: 0 auto; color: #6C6C6C; font-size: 1.05rem; }
+
+.about-content-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+  margin-bottom: 70px;
+}
+
+.about-img-wrap {
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow: 0 28px 64px rgba(47, 47, 47, 0.08);
+  height: 440px;
+  background: #FAF7F7;
+}
+
+.about-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+.about-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.about-text p { color: #6C6C6C; margin-bottom: 18px; font-size: 0.96rem; line-height: 1.7; }
+
+.about-vision-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.vision-card {
+  background: #fff;
+  padding: 36px;
+  border-radius: 32px;
+  box-shadow: 0 12px 34px rgba(47, 47, 47, 0.05);
+  border: 1px solid rgba(233, 213, 214, 0.3);
+  text-align: center;
+  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vision-card:hover { transform: translateY(-6px); box-shadow: 0 28px 64px rgba(47, 47, 47, 0.08); }
+
+.vision-icon { font-size: 2.2rem; margin-bottom: 16px; }
+
+.vision-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.vision-card p { font-size: 0.88rem; color: #6C6C6C; line-height: 1.6; }
+
+@media (max-width: 1024px) {
+  .about-vision-cards { grid-template-columns: repeat(2, 1fr); }
+  .about-content-row { gap: 30px; }
+}
+
+@media (max-width: 992px) { 
+  .about-content-row { grid-template-columns: 1fr; } 
+  .about-img-wrap { height: 300px; }
+}
+
+@media (max-width: 768px) { 
+  .about-vision-cards { grid-template-columns: 1fr; }
+  .about-img-wrap { height: 260px; }
+  .about-hero { padding: 44px 24px; }
+  .about-text h2 { font-size: 1.6rem; }
+}
+
+@media (max-width: 480px) {
+  .about-vision-cards { grid-template-columns: 1fr; }
+  .about-hero { padding: 36px 20px; }
+  .vision-card { padding: 24px; }
+  .legal-card { padding: 24px 16px; }
+  .legal-layout { padding: 16px 0 40px; }
+}
+.legal-layout {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 0 70px;
+}
+
+.legal-card {
+  background: #fff;
+  border-radius: 32px;
+  padding: 50px 60px;
+  box-shadow: 0 12px 34px rgba(47,47,47,0.05);
+  border: 1px solid rgba(233,213,214,0.3);
+}
+
+.legal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #2F2F2F;
+}
+
+.legal-meta {
+  font-size: 0.84rem;
+  color: #6C6C6C;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(233,213,214,0.4);
+}
+
+.legal-intro {
+  font-size: 0.96rem;
+  color: #6C6C6C;
+  line-height: 1.8;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(233,213,214,0.3);
+}
+
+.legal-content { display: flex; flex-direction: column; }
+
+.legal-section { margin-bottom: 28px; }
+
+.legal-content h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #2F2F2F;
+}
+
+.legal-content p {
+  color: #6C6C6C;
+  font-size: 0.92rem;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.legal-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legal-list li {
+  font-size: 0.9rem;
+  color: #6C6C6C;
+  padding-left: 18px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.legal-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #D4B6B7;
+  font-weight: 700;
+}
+
+.legal-contact-block {
+  background: #FAF7F7;
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-top: 8px;
+  border: 1px solid rgba(233,213,214,0.3);
+}
+
+.legal-contact-block p {
+  margin-bottom: 6px !important;
+}
+
+.legal-contact-block a {
+  color: #D4B6B7;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.legal-contact-block a:hover { color: #2F2F2F; }
+
+@media (max-width: 768px) {
+  .legal-card { padding: 30px 22px; }
+  .legal-layout { padding: 24px 0 50px; }
+}
+
+@media (max-width: 480px) {
+  .legal-card { padding: 24px 14px; }
+}
