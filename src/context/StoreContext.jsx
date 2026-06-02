@@ -60,6 +60,18 @@ export function StoreProvider({ children }) {
     try { return JSON.parse(localStorage.getItem("wearly_user")) || null; } catch { return null; }
   });
 
+  // Seed demo customer into localStorage.users on first load
+  useEffect(() => {
+    try {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const demoExists = users.find(u => u.email === "customer@wearly.com");
+      if (!demoExists) {
+        users.push({ id: 100, name: "Demo Customer", email: "customer@wearly.com", password: "customer123", phone: "", role: "customer", status: "active" });
+        localStorage.setItem("users", JSON.stringify(users));
+      }
+    } catch { /* ignore */ }
+  }, []);
+
   useEffect(() => { localStorage.setItem("wearly_cart", JSON.stringify(cartItems)); }, [cartItems]);
   useEffect(() => { localStorage.setItem("wearly_wishlist", JSON.stringify(wishlistItems)); }, [wishlistItems]);
   useEffect(() => { localStorage.setItem("wearly_user", JSON.stringify(user)); }, [user]);
@@ -87,7 +99,7 @@ export function StoreProvider({ children }) {
 
   const removeFromWishlist = (id) => setWishlistItems(prev => prev.filter(i => i.id !== id));
 
-  const login = (userData) => setUser(userData);
+  const login = (userData) => { setUser(userData); localStorage.setItem("wearly_user", JSON.stringify(userData)); };
   const logout = () => { setUser(null); localStorage.removeItem("wearly_user"); };
 
   const placeOrder = (shippingAddress, paymentMethod, orderItems, totals) => {

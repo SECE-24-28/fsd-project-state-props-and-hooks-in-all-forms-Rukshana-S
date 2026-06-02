@@ -13,7 +13,7 @@ export default function AdminNavbar({ navLinks, logoSub, drawerTitle }) {
 
   const handleLogout = () => {
     adminLogout();
-    navigate("/admin/login");
+    navigate("/login");
   };
 
   // Close dropdown on outside click

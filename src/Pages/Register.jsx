@@ -3,78 +3,122 @@ import { Link, useNavigate } from "react-router-dom";
 import "../Assets/Css/auth.css";
 import { adminBgStyle } from "../utils/adminBgStyle";
 
+const EyeOpen = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+const EyeClosed = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" />
+    <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+    <line x1="1" y1="1" x2="23" y2="23" />
+  </svg>
+);
+
+function Toast({ message, onClose }) {
+  React.useEffect(() => { const t = setTimeout(onClose, 2500); return () => clearTimeout(t); }, [onClose]);
+  return <div className="auth-toast auth-toast-success"><span>✓</span>{message}</div>;
+}
+
+function validate(form) {
+  const e = {};
+  if (!form.name.trim()) e.name = "Full name is required.";
+  else if (form.name.trim().length < 3) e.name = "Name must be at least 3 characters.";
+  if (!form.email.trim()) e.email = "Email is required.";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) e.email = "Enter a valid email address.";
+  if (!form.phone.trim()) e.phone = "Phone number is required.";
+  else if (!/^\d{10}$/.test(form.phone.replace(/\s/g, ""))) e.phone = "Enter a valid 10-digit phone number.";
+  if (!form.password) e.password = "Password is required.";
+  else if (form.password.length < 6) e.password = "Password must be at least 6 characters.";
+  else if (!/[A-Z]/.test(form.password)) e.password = "Password must contain at least 1 uppercase letter.";
+  else if (!/[a-z]/.test(form.password)) e.password = "Password must contain at least 1 lowercase letter.";
+  else if (!/[0-9]/.test(form.password)) e.password = "Password must contain at least 1 number.";
+  if (!form.confirm) e.confirm = "Please confirm your password.";
+  else if (form.confirm !== form.password) e.confirm = "Passwords do not match.";
+  return e;
+}
+
 export default function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "", agreed: false });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", confirm: "" });
+  const [errs, setErrs] = useState({});
+  const [show, setShow] = useState({ password: false, confirm: false });
+  const [toast, setToast] = useState(false);
+
+  const set = (key, val) => {
+    setForm(f => ({ ...f, [key]: val }));
+    setErrs(e => ({ ...e, [key]: "" }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.password || !form.confirm) { setError("Please fill in all fields."); return; }
-    if (form.password !== form.confirm) { setError("Passwords do not match."); return; }
-    if (form.password.length < 6) { setError("Password must be at least 6 characters."); return; }
-    if (!form.agreed) { setError("Please accept the Privacy Policy and Terms & Conditions."); return; }
-    localStorage.setItem("wearly_registered_user", JSON.stringify({ name: form.name, email: form.email, password: form.password }));
-    setSuccess(true);
-    setTimeout(() => navigate("/login"), 2000);
+    const errors = validate(form);
+    if (Object.keys(errors).length) { setErrs(errors); return; }
+    try {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      if (users.find(u => u.email.toLowerCase() === form.email.toLowerCase().trim())) {
+        setErrs({ email: "An account with this email already exists." }); return;
+      }
+      users.push({
+        id: Date.now(), name: form.name.trim(), email: form.email.toLowerCase().trim(),
+        phone: form.phone.trim(), password: form.password, role: "customer", status: "active",
+        registeredAt: new Date().toISOString(),
+      });
+      localStorage.setItem("users", JSON.stringify(users));
+    } catch { setErrs({ general: "Registration failed. Please try again." }); return; }
+    setToast(true);
+    setTimeout(() => navigate("/login"), 2200);
   };
+
+  const fields = [
+    { key: "name",     label: "Full Name",        type: "text",     placeholder: "Your full name",         eye: false },
+    { key: "email",    label: "Email Address",     type: "email",    placeholder: "you@example.com",        eye: false },
+    { key: "phone",    label: "Phone Number",      type: "tel",      placeholder: "10-digit mobile number", eye: false },
+    { key: "password", label: "Password",          type: "password", placeholder: "Min. 6 characters",      eye: true  },
+    { key: "confirm",  label: "Confirm Password",  type: "password", placeholder: "Repeat your password",   eye: true  },
+  ];
 
   return (
     <div className="auth-page" style={adminBgStyle}>
+      {toast && <Toast message="Account created successfully!" onClose={() => setToast(false)} />}
       <div className="auth-page-brand" onClick={() => navigate("/")}>WEARLY</div>
       <div className="auth-card premium-card">
         <div className="auth-header">
           <h2 className="auth-title">Create Account</h2>
           <p className="auth-subtitle">Join the WEARLY family today</p>
         </div>
-        {success ? (
+
+        {toast ? (
           <div className="success-card">
             <h4>Account Created! 🎉</h4>
             <p>Redirecting you to login...</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label">Full Name</label>
-              <div className="input-wrapper">
-                <input type="text" placeholder="Your full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+          <form onSubmit={handleSubmit} noValidate>
+            {fields.map(({ key, label, type, placeholder, eye }) => (
+              <div className="form-group" key={key}>
+                <label className="form-label">{label}</label>
+                <div className={`input-wrapper${eye ? " input-with-eye" : ""}${errs[key] ? " input-error" : ""}`}>
+                  <input
+                    type={eye ? (show[key] ? "text" : "password") : type}
+                    placeholder={placeholder}
+                    value={form[key]}
+                    onChange={e => set(key, e.target.value)}
+                    autoComplete={key === "confirm" ? "new-password" : key === "password" ? "new-password" : key}
+                  />
+                  {eye && (
+                    <button type="button" className="eye-btn" onClick={() => setShow(s => ({ ...s, [key]: !s[key] }))} tabIndex={-1}>
+                      {show[key] ? <EyeClosed /> : <EyeOpen />}
+                    </button>
+                  )}
+                </div>
+                {errs[key] && <p className="field-error">{errs[key]}</p>}
               </div>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Email Address</label>
-              <div className="input-wrapper">
-                <input type="email" placeholder="you@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <div className="input-wrapper">
-                <input type="password" placeholder="Min. 6 characters" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Confirm Password</label>
-              <div className="input-wrapper">
-                <input type="password" placeholder="Repeat your password" value={form.confirm} onChange={e => setForm({ ...form, confirm: e.target.value })} />
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="terms-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={form.agreed}
-                  onChange={e => setForm({ ...form, agreed: e.target.checked })}
-                />
-                <span>
-                  I agree to the{" "}
-                  <Link to="/privacy-policy" target="_blank" className="terms-link">Privacy Policy</Link>
-                  {" "}&amp;{" "}
-                  <Link to="/terms" target="_blank" className="terms-link">Terms &amp; Conditions</Link>
-                </span>
-              </label>
-            </div>
-            {error && <div className="auth-error">{error}</div>}
+            ))}
+
+            {errs.general && <div className="auth-error">{errs.general}</div>}
             <button type="submit" className="btn-primary auth-btn">Create Account</button>
           </form>
         )}

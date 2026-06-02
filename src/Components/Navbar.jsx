@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
+import { useAdmin } from "../admin/context/AdminContext";
 import "../Assets/Css/navbar.css";
 
 const NAV_LINKS = [
@@ -40,10 +41,17 @@ const CloseIcon = () => (
 
 export default function Navbar() {
   const { cartItems, wishlistItems, user, logout } = useStore();
+  const { adminSession, adminLogout } = useAdmin();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
   const profileRef = useRef(null);
+
+  const displayUser = user || (adminSession ? { name: adminSession.name, role: adminSession.role } : null);
+  const userRole = (displayUser?.role || "").toLowerCase().replace(/_/g, "-");
+  const ROLE_LABELS = { "super-admin": "Super Admin", "store-admin": "Store Admin", "customer": "Customer" };
+  const ROLE_COLORS = { "super-admin": "#7C3AED", "store-admin": "#0891B2", "customer": "#059669" };
+  const handleLogout = () => { logout(); adminLogout(); setProfileOpen(false); setDrawerOpen(false); navigate("/login"); };
 
   const cartCount = cartItems.reduce((s, i) => s + i.qty, 0);
   const wishCount = wishlistItems.length;
@@ -107,10 +115,15 @@ export default function Navbar() {
 
               {/* Desktop auth */}
               <div className="nb-auth nb-desktop-auth">
-                {user ? (
+                {displayUser ? (
                   <>
-                    <span className="nb-welcome">Welcome, {user.name.split(" ")[0]}</span>
-                    <button className="nb-logout" onClick={logout}>Logout</button>
+                    <span className="nb-welcome">Welcome, {displayUser.name.split(" ")[0]}</span>
+                    {userRole && ROLE_LABELS[userRole] && (
+                      <span style={{ fontSize: "0.75rem", fontWeight: 600, padding: "3px 10px", borderRadius: "20px", background: `${ROLE_COLORS[userRole]}18`, color: ROLE_COLORS[userRole] }}>
+                        {ROLE_LABELS[userRole]}
+                      </span>
+                    )}
+                    <button className="nb-logout" onClick={handleLogout}>Logout</button>
                   </>
                 ) : (
                   <button className="nb-login-btn" onClick={() => goTo("/login")}>Login</button>
@@ -124,14 +137,17 @@ export default function Navbar() {
                 </button>
                 {profileOpen && (
                   <div className="nb-profile-dropdown">
-                    {user ? (
+                    {displayUser ? (
                       <>
-                        <span className="nb-dropdown-user">Hi, {user.name.split(" ")[0]}</span>
+                        <span className="nb-dropdown-user">Hi, {displayUser.name.split(" ")[0]}</span>
+                        {userRole && ROLE_LABELS[userRole] && (
+                          <span style={{ display: "block", fontSize: "0.72rem", fontWeight: 600, color: ROLE_COLORS[userRole], padding: "0 0 6px" }}>{ROLE_LABELS[userRole]}</span>
+                        )}
                         <hr className="nb-dropdown-hr" />
                         <button className="nb-dropdown-item" onClick={() => goTo("/wishlist")}>Wishlist</button>
                         <button className="nb-dropdown-item" onClick={() => goTo("/cart")}>Cart</button>
                         <hr className="nb-dropdown-hr" />
-                        <button className="nb-dropdown-item nb-dropdown-logout" onClick={() => { logout(); setProfileOpen(false); }}>Logout</button>
+                        <button className="nb-dropdown-item nb-dropdown-logout" onClick={handleLogout}>Logout</button>
                       </>
                     ) : (
                       <button className="nb-dropdown-item" onClick={() => goTo("/login")}>Login / Sign Up</button>
@@ -188,13 +204,15 @@ export default function Navbar() {
             <span className="nb-drawer-link-icon"><CartIcon /></span>
             Cart {cartCount > 0 && <span className="nb-drawer-badge">{cartCount}</span>}
           </button>
-          {user ? (
+          {displayUser ? (
             <>
-              <button className="nb-drawer-link" onClick={() => goTo("/account")}>
-                <span className="nb-drawer-link-icon"><UserIcon /></span>
-                My Account
-              </button>
-              <button className="nb-drawer-logout" onClick={() => { logout(); setDrawerOpen(false); }}>Logout</button>
+              <div style={{ padding: "8px 0", fontSize: "0.85rem", fontWeight: 600, color: "#2f2f2f" }}>
+                {displayUser.name}
+                {userRole && ROLE_LABELS[userRole] && (
+                  <span style={{ marginLeft: "8px", fontSize: "0.72rem", fontWeight: 600, padding: "2px 8px", borderRadius: "20px", background: `${ROLE_COLORS[userRole]}18`, color: ROLE_COLORS[userRole] }}>{ROLE_LABELS[userRole]}</span>
+                )}
+              </div>
+              <button className="nb-drawer-logout" onClick={handleLogout}>Logout</button>
             </>
           ) : (
             <button className="nb-drawer-login" onClick={() => goTo("/login")}>Login / Sign Up</button>

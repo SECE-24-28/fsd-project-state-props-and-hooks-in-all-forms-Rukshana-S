@@ -75,6 +75,15 @@ function seedOtherData() {
   if (!localStorage.getItem("settings"))       localStorage.setItem("settings",       JSON.stringify(SEED_SETTINGS));
   if (!localStorage.getItem("privacyPolicy"))  localStorage.setItem("privacyPolicy",  "WEARLY respects your privacy.");
   if (!localStorage.getItem("termsConditions"))localStorage.setItem("termsConditions","By using WEARLY, you agree to our terms.");
+
+  // Seed demo customer into users store
+  try {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    if (!users.find(u => u.email === "customer@wearly.com")) {
+      users.push({ id: 100, name: "Demo Customer", email: "customer@wearly.com", password: "customer123", phone: "", role: "customer", status: "active" });
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+  } catch { /* ignore */ }
 }
 
 // Run synchronously at module load time — before any component renders
