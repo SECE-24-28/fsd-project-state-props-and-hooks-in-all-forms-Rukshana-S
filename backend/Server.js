@@ -30,23 +30,34 @@ app.use("/api/", limiter);
 
 app.use(express.json({ limit: "10mb" })); // support large base64 image payloads
 
-// Configure dynamic CORS mapping
+console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:3000",
   "http://localhost:5173",
+  "https://wearly-frontend-htam.onrender.com"
 ].filter(Boolean);
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS policy violation"));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("Blocked Origin:", origin);
+        callback(null, false);
+      }
+    },
+    credentials: true
+  })
+);
+
+app.options("*", cors());
 
 // Routes
 const UserRoutes         = require("./Routes/UserRoutes");
