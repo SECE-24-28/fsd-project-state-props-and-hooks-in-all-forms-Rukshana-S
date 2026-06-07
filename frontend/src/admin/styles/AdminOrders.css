@@ -1,0 +1,9 @@
+@import '../../admin.css';
+
+.admin-container {
+    width: 100%;
+}
+
+.card {
+    background: white;
+}

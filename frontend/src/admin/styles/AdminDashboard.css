@@ -1,0 +1,15 @@
+/* Points to src/admin.css — all shared admin styles live there */
+@import '../../admin.css';
+
+/* Dashboard Page Specific Styles */
+
+.adm-dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+  .adm-dash-grid { grid-template-columns: 1fr; }
+}
