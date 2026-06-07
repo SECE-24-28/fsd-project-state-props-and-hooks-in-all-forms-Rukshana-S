@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../Models/UserModel");
 const generateToken = require("../Utils/generateToken");
+const Notification = require("../Models/NotificationModel");
 
 // POST /api/users/register
 const registerUser = async (req, res) => {
@@ -35,6 +36,22 @@ const registerUser = async (req, res) => {
       storeName: storeName || "",
       brandName: brandName || "",
     });
+
+    if (userRole === "store-admin") {
+      Notification.fire({
+        title: "New Seller Request 🏪",
+        message: `A new seller application has been received from "${name}" (${storeName}).`,
+        role: "super-admin",
+        type: "system",
+      });
+    } else {
+      Notification.fire({
+        title: "New Customer Registered 🛍️",
+        message: `A new customer "${name}" has registered on the platform.`,
+        role: "super-admin",
+        type: "system",
+      });
+    }
 
     const token = generateToken({ id: user._id, role: user.role, status: user.status });
 

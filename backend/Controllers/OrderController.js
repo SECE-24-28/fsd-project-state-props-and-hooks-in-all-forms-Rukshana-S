@@ -3,7 +3,7 @@ const Product = require("../Models/ProductModel");
 const Notification = require("../Models/NotificationModel");
 
 // Statuses a customer is allowed to cancel from
-const CUSTOMER_CANCELLABLE = ["Pending", "Confirmed", "Processing"];
+const CUSTOMER_CANCELLABLE = ["Pending", "Processing", "Confirmed", "Packed"];
 
 // POST /api/orders
 const createOrder = async (req, res) => {
@@ -173,6 +173,19 @@ const updateOrder = async (req, res) => {
       return res.status(400).json({ success: false, message: "Cannot update a cancelled order" });
     }
 
+    // ── Store Admin rules ────────────────────────────────────────────────────
+    if (req.user.role === "store-admin") {
+      if (req.body.orderStatus) {
+        const allowedStatuses = ["Processing", "Shipped", "Out For Delivery", "Delivered"];
+        if (!allowedStatuses.includes(req.body.orderStatus)) {
+          return res.status(400).json({
+            success: false,
+            message: `Store admins can only update status to: ${allowedStatuses.join(", ")}`,
+          });
+        }
+      }
+    }
+
     // ── Customer rules ───────────────────────────────────────────────────────
     if (req.user.role === "user") {
       if (order.userId && order.userId.toString() !== req.user.id) {
@@ -204,26 +217,65 @@ const updateOrder = async (req, res) => {
 
     // ── Post-save side-effects ───────────────────────────────────────────────
     if (updated && req.body.orderStatus) {
-      const isCancelledByCustomer = req.body.orderStatus === "Cancelled" && req.user.role === "user";
+      const orderIdShort = updated._id.toString().slice(-6).toUpperCase();
 
-      // Notify buyer on any status change
+      // Fired to Customer
+      let customerTitle = `Order Status: ${updated.orderStatus} 📦`;
+      let customerMsg = `Your order #${orderIdShort} status is now: ${updated.orderStatus}.`;
+      if (updated.orderStatus === "Cancelled") {
+        customerTitle = `Order Cancelled ❌`;
+        customerMsg = `Your order #${orderIdShort} has been cancelled.`;
+      } else if (updated.orderStatus === "Shipped") {
+        customerTitle = `Order Shipped 🚚`;
+        customerMsg = `Your order #${orderIdShort} has been shipped.`;
+      } else if (updated.orderStatus === "Out For Delivery") {
+        customerTitle = `Order Out For Delivery 🛵`;
+        customerMsg = `Your order #${orderIdShort} is out for delivery.`;
+      } else if (updated.orderStatus === "Delivered") {
+        customerTitle = `Order Delivered 🎁`;
+        customerMsg = `Your order #${orderIdShort} has been delivered successfully.`;
+      }
+
       Notification.fire({
-        title:        `Order ${updated.orderStatus} ✅`,
-        message:      `Your order #${updated._id.toString().slice(-6).toUpperCase()} status changed to: ${updated.orderStatus}.`,
-        role:         "user",
-        type:         "order",
+        title: customerTitle,
+        message: customerMsg,
+        role: "user",
+        type: "order",
         targetUserId: updated.userId,
       });
 
-      // If customer cancelled — notify store-admin
-      if (isCancelledByCustomer) {
-        Notification.fire({
-          title:   "Customer Cancelled an Order ❌",
-          message: `A customer has cancelled Order #${updated._id.toString().slice(-6).toUpperCase()}.`,
-          role:    "store-admin",
-          type:    "order",
-        });
+      // Fired to Admin and Store Admin
+      let adminTitle = `Order Status: ${updated.orderStatus}`;
+      let adminMsg = `Order #${orderIdShort} status updated to: ${updated.orderStatus}.`;
+      if (updated.orderStatus === "Cancelled") {
+        adminTitle = `Order Cancelled ❌`;
+        adminMsg = `Order #${orderIdShort} has been cancelled${req.user.role === "user" ? " by the customer" : ""}.`;
+      } else if (updated.orderStatus === "Shipped") {
+        adminTitle = `Order Shipped 🚚`;
+        adminMsg = `Order #${orderIdShort} has been shipped.`;
+      } else if (updated.orderStatus === "Out For Delivery") {
+        adminTitle = `Order Out For Delivery 🛵`;
+        adminMsg = `Order #${orderIdShort} is out for delivery.`;
+      } else if (updated.orderStatus === "Delivered") {
+        adminTitle = `Order Delivered 🎁`;
+        adminMsg = `Order #${orderIdShort} has been delivered.`;
       }
+
+      // Send to Super Admin
+      Notification.fire({
+        title: adminTitle,
+        message: adminMsg,
+        role: "super-admin",
+        type: "order",
+      });
+
+      // Send to Store Admin
+      Notification.fire({
+        title: adminTitle,
+        message: adminMsg,
+        role: "store-admin",
+        type: "order",
+      });
 
       const User    = require("../Models/UserModel");
       const userDoc = await User.findById(updated.userId);

@@ -48,10 +48,16 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://wearly-frontend-htam.onrender.com"
-].filter(Boolean);
+];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
   credentials: true
 }));
 

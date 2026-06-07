@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import { useAuth } from "../context/AuthContext";
 import { Package } from "lucide-react";
+import api from "../services/api";
 import "../Assets/Css/navbar.css";
 
 const getNavLinks = (user) => {
@@ -15,7 +16,7 @@ const getNavLinks = (user) => {
     ["/brands", "Brands"],
   ];
   if (user) {
-    links.push(["/orders", "Track Orders", true]);
+    links.push(["/orders", "Track Order", true]);
   }
   links.push(["/products?category=ethnic", "Ethnic Wear"]);
   links.push(["/faq", "FAQ"]);
@@ -63,11 +64,56 @@ export default function Navbar() {
 
   const wishCount = wishlistCount;
 
+  const [notifications, setNotifications] = useState([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef(null);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const fetchNotifications = useCallback(async () => {
+    if (!displayUser) return;
+    try {
+      const res = await api.get("/notifications");
+      setNotifications(res.data.data || []);
+    } catch (err) {
+      console.error("Failed to fetch notifications:", err);
+    }
+  }, [displayUser]);
+
+  useEffect(() => {
+    if (displayUser) {
+      fetchNotifications();
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    } else {
+      setNotifications([]);
+    }
+  }, [displayUser, fetchNotifications]);
+
+  const handleMarkRead = async (id) => {
+    setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
+    try {
+      await api.put(`/notifications/${id}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    try {
+      await api.put("/notifications/mark-all");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const goTo = (path) => {
     navigate(path);
     window.scrollTo(0, 0);
     setDrawerOpen(false);
     setProfileOpen(false);
+    setNotifOpen(false);
   };
 
   // Close profile dropdown on outside click
@@ -75,6 +121,9 @@ export default function Navbar() {
     const handler = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -122,6 +171,51 @@ export default function Navbar() {
                 <CartIcon />
                 {cartCount > 0 && <span className="nb-badge">{cartCount}</span>}
               </button>
+
+              {/* Notifications */}
+              {displayUser && (
+                <div className="nb-profile-wrap" ref={notifRef} style={{ position: "relative" }}>
+                  <button className="nb-icon-btn" onClick={() => setNotifOpen(!notifOpen)} aria-label="Notifications" style={{ position: "relative" }}>
+                    <span style={{ fontSize: "1.2rem", display: "inline-block", verticalAlign: "middle" }}>🔔</span>
+                    {unreadCount > 0 && (
+                      <span className="nb-badge" style={{ position: "absolute", top: "-4px", right: "-4px", background: "#DC2626", color: "#fff", fontSize: "0.65rem", padding: "2px 5px", borderRadius: "50%", minWidth: "12px", textAlign: "center", lineHeight: 1 }}>
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                  {notifOpen && (
+                    <div className="nb-profile-dropdown" style={{ width: "300px", padding: "12px", right: 0, top: "100%", position: "absolute", background: "#fff", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", borderRadius: "8px", zIndex: 1000, border: "1px solid #eee" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                        <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "#111" }}>Notifications</span>
+                        {unreadCount > 0 && (
+                          <button onClick={handleMarkAllRead} style={{ background: "none", border: "none", color: "#b8929a", fontSize: "0.75rem", cursor: "pointer", fontWeight: 600 }}>
+                            Mark all read
+                          </button>
+                        )}
+                      </div>
+                      <hr className="nb-dropdown-hr" style={{ margin: "4px 0 8px", border: 0, borderTop: "1px solid #eee" }} />
+                      <div style={{ maxHeight: "240px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "8px" }}>
+                        {notifications.length === 0 ? (
+                          <div style={{ textAlign: "center", padding: "16px", color: "#888", fontSize: "0.8rem" }}>No notifications</div>
+                        ) : (
+                          notifications.map(n => (
+                            <div key={n._id} onClick={() => handleMarkRead(n._id)} style={{ padding: "8px", borderRadius: "8px", background: n.read ? "#f9f9f9" : "#fff0f2", border: "1px solid #eee", cursor: "pointer", display: "flex", flexDirection: "column", gap: "2px" }}>
+                              <div style={{ fontWeight: 600, fontSize: "0.82rem", color: "#333", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <span>{n.title}</span>
+                                {!n.read && <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#DC2626", display: "inline-block" }} />}
+                              </div>
+                              <div style={{ fontSize: "0.75rem", color: "#666", lineHeight: 1.3 }}>{n.message}</div>
+                              <div style={{ fontSize: "0.65rem", color: "#999", textAlign: "right", marginTop: "2px" }}>
+                                {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Desktop auth */}
               <div className="nb-auth nb-desktop-auth">

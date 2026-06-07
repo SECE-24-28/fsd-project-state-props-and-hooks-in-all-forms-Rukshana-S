@@ -117,7 +117,7 @@ export default function MyOrders() {
                     <button className="btn-secondary" style={{ padding: "8px 16px", fontSize: "0.85rem" }} onClick={() => handleReorder(order)}>
                       Reorder
                     </button>
-                    {["Pending", "Confirmed", "Processing"].includes(order.orderStatus) && (
+                    {["Pending", "Confirmed", "Processing", "Packed"].includes(order.orderStatus) && (
                       <button className="btn-secondary" style={{ padding: "8px 16px", fontSize: "0.85rem", color: "#DC2626", borderColor: "#FCA5A5" }} onClick={() => handleCancelOrder(order._id)}>
                         Cancel Order
                       </button>
