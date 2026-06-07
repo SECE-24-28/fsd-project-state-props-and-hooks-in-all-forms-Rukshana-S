@@ -3,6 +3,12 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { StoreProvider } from "./context/StoreContext";
 import { AdminProvider } from "./admin/context/AdminContext";
 import { AuthProvider }  from "./context/AuthContext";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import ErrorBoundary from "./Components/ErrorBoundary";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "./Components/Loading";
+
 
 // ── Admin layout & guards
 import AdminLayout      from "./admin/components/AdminLayout";
@@ -69,7 +75,7 @@ function StoreLayout() {
   return (
     <>
       {!hide && <Navbar />}
-      <React.Suspense fallback={<div className="container" style={{ padding: "80px 0", textAlign: "center" }}><p>Loading...</p></div>}>
+      <React.Suspense fallback={<Loading type="spinner" />}>
         <Routes>
           <Route path="/"                element={<Homepage />} />
           <Route path="/products"        element={<Products />} />
@@ -78,13 +84,13 @@ function StoreLayout() {
           <Route path="/about"           element={<About />} />
           <Route path="/contact"         element={<Contact />} />
           <Route path="/cart"            element={<Cart />} />
-          <Route path="/wishlist"        element={<Wishlist />} />
-          <Route path="/checkout"        element={<Checkout />} />
-          <Route path="/order-success"   element={<OrderSuccess />} />
-          <Route path="/order-success/:id" element={<OrderSuccess />} />
-          <Route path="/orders"          element={<MyOrders />} />
-          <Route path="/my-orders"       element={<MyOrders />} />
-          <Route path="/orders/:id"      element={<OrderTracking />} />
+          <Route path="/wishlist"        element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+          <Route path="/checkout"        element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+          <Route path="/order-success"   element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+          <Route path="/order-success/:id" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+          <Route path="/orders"          element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
+          <Route path="/my-orders"       element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
+          <Route path="/orders/:id"      element={<ProtectedRoute><OrderTracking /></ProtectedRoute>} />
           <Route path="/faq"             element={<FAQPage />} />
           <Route path="/privacy-policy"  element={<PrivacyPolicy />} />
           <Route path="/terms"           element={<TermsConditions />} />
@@ -153,10 +159,13 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <StoreProvider>
-        <AppRoutes />
-      </StoreProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <StoreProvider>
+          <AppRoutes />
+          <ToastContainer position="top-right" autoClose={3000} />
+        </StoreProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

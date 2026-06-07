@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import api from "../services/api";
+import { toast } from "react-toastify";
 
 const StoreContext = createContext();
 
@@ -90,8 +91,10 @@ export function StoreProvider({ children }) {
         quantity:  qty,
       });
       await fetchCart();
+      toast.success(`${product.name} added to cart!`);
     } catch (err) {
       console.error("[StoreContext] addToCart:", err?.response?.data?.message || err.message);
+      toast.error(err?.response?.data?.message || "Failed to add to cart");
     }
   };
 
@@ -99,8 +102,10 @@ export function StoreProvider({ children }) {
     try {
       await api.delete(`/cart/${itemId}`);
       setCartItems(prev => prev.filter(i => i._id !== itemId));
+      toast.info("Item removed from cart");
     } catch (err) {
       console.error("[StoreContext] removeFromCart:", err?.response?.data?.message || err.message);
+      toast.error("Failed to remove item from cart");
     }
   };
 
@@ -138,9 +143,14 @@ export function StoreProvider({ children }) {
         brand:     product.brand || "",
       });
       await fetchWishlist();
+      toast.success(`${product.name} added to wishlist!`);
     } catch (err) {
-      if (err?.response?.status !== 409)
+      if (err?.response?.status !== 409) {
         console.error("[StoreContext] addToWishlist:", err?.response?.data?.message || err.message);
+        toast.error(err?.response?.data?.message || "Failed to add to wishlist");
+      } else {
+        toast.info("Item already in wishlist");
+      }
     }
   };
 
@@ -148,8 +158,10 @@ export function StoreProvider({ children }) {
     try {
       await api.delete(`/wishlist/${itemId}`);
       setWishlistItems(prev => prev.filter(i => i._id !== itemId));
+      toast.info("Item removed from wishlist");
     } catch (err) {
       console.error("[StoreContext] removeFromWishlist:", err?.response?.data?.message || err.message);
+      toast.error("Failed to remove from wishlist");
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 import "../Assets/Css/auth.css";
 
 const EyeOpen = () => (
@@ -17,18 +18,6 @@ const EyeClosed = () => (
   </svg>
 );
 
-function Toast({ message, type = "success", onClose }) {
-  React.useEffect(() => {
-    const t = setTimeout(onClose, 2500);
-    return () => clearTimeout(t);
-  }, [onClose]);
-  return (
-    <div className={`auth-toast auth-toast-${type}`}>
-      <span>{type === "success" ? "✓" : "✕"}</span>
-      {message}
-    </div>
-  );
-}
 
 function validate(form) {
   const errs = {};
@@ -45,7 +34,6 @@ export default function Login() {
   const [form, setForm]       = useState({ email: "", password: "", remember: false });
   const [errs, setErrs]       = useState({});
   const [loading, setLoading] = useState(false);
-  const [toast, setToast]     = useState(null);
   const [showPass, setShowPass] = useState(false);
 
   const set = (key, val) => {
@@ -62,20 +50,21 @@ export default function Login() {
 
     try {
       await login(form.email.trim(), form.password);
-      setToast({ message: "Login successful!", type: "success" });
+      toast.success("Login successful!");
     } catch (err) {
       const msg = err?.response?.data?.message || "Login failed. Please try again.";
+      let friendlyMsg = msg;
       if (msg.toLowerCase().includes("pending")) {
-        setErrs({ general: "Your account is pending approval by the admin." });
+        friendlyMsg = "Your account is pending approval by the admin.";
       } else if (msg.toLowerCase().includes("rejected")) {
-        setErrs({ general: "Your account application was rejected." });
+        friendlyMsg = "Your account application was rejected.";
       } else if (msg.toLowerCase().includes("deactivated")) {
-        setErrs({ general: "Your account has been deactivated. Contact support." });
+        friendlyMsg = "Your account has been deactivated. Contact support.";
       } else if (msg.toLowerCase().includes("invalid") || msg.toLowerCase().includes("credentials")) {
-        setErrs({ general: "Invalid email or password. Please try again." });
-      } else {
-        setErrs({ general: msg });
+        friendlyMsg = "Invalid email or password. Please try again.";
       }
+      setErrs({ general: friendlyMsg });
+      toast.error(friendlyMsg);
     } finally {
       setLoading(false);
     }
@@ -83,7 +72,6 @@ export default function Login() {
 
   return (
     <div className="auth-bg-page">
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
       <div className="auth-page-brand" onClick={() => navigate("/")}>WEARLY</div>
 

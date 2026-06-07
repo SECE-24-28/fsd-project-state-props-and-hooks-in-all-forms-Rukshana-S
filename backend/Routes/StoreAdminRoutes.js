@@ -5,12 +5,13 @@ const {
   getMyProducts, getMyOrders, getMyCustomers, getStoreAnalytics,
 } = require("../Controllers/StoreAdminController");
 const { isStoreAdmin } = require("../Utils/verifyToken");
+const asyncHandler = require("../Middlewares/asyncHandler");
 
-router.get("/profile", isStoreAdmin, getStoreProfile);
-router.put("/profile", isStoreAdmin, updateStoreProfile);
-router.get("/products", isStoreAdmin, getMyProducts);
-router.get("/orders", isStoreAdmin, getMyOrders);
-router.get("/customers", isStoreAdmin, getMyCustomers);
-router.get("/analytics", isStoreAdmin, getStoreAnalytics);
+router.get("/profile", isStoreAdmin, asyncHandler(getStoreProfile));
+router.put("/profile", isStoreAdmin, asyncHandler(updateStoreProfile));
+router.get("/products", isStoreAdmin, asyncHandler(getMyProducts));
+router.get("/orders", isStoreAdmin, asyncHandler(getMyOrders));
+router.get("/customers", isStoreAdmin, asyncHandler(getMyCustomers));
+router.get("/analytics", isStoreAdmin, asyncHandler(getStoreAnalytics));
 
 module.exports = router;

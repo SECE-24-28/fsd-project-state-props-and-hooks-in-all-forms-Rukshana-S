@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import ProductCard from "../Components/ProductCard";
+import Loading from "../Components/Loading";
 import "../Assets/Css/products.css";
 
 const CATEGORIES = ["All", "women", "men", "kids", "ethnic"];
@@ -158,7 +159,7 @@ export default function Products() {
               </div>
 
               {productsLoading ? (
-                <div className="no-results"><p>Loading products...</p></div>
+                <Loading type="skeleton" count={4} />
               ) : (
                 <>
                   <div className="catalog-products-grid">

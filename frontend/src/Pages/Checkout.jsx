@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { toast } from "react-toastify";
 import "../Assets/Css/checkout.css";
 
 const STATES = ["Andhra Pradesh","Delhi","Gujarat","Karnataka","Kerala","Maharashtra","Rajasthan","Tamil Nadu","Telangana","Uttar Pradesh","West Bengal"];
@@ -111,10 +112,13 @@ export default function Checkout() {
       });
       setDiscountAmount(res.data.data.discountAmount);
       setCouponError("");
+      toast.success(`Coupon "${res.data.data.code}" applied successfully!`);
     } catch (err) {
-      setCouponError(err?.response?.data?.message || "Invalid coupon code");
+      const errMsg = err?.response?.data?.message || "Invalid coupon code";
+      setCouponError(errMsg);
       setAppliedCoupon(null);
       setDiscountAmount(0);
+      toast.error(errMsg);
     } finally {
       setCouponLoading(false);
     }
@@ -161,8 +165,11 @@ export default function Checkout() {
       try {
         const id = await placeOrder(address, "cod", cartItems, { total: grand });
         setOrderId(id);
+        toast.success("Order placed successfully!");
       } catch (err) {
-        setError(err?.response?.data?.message || "Failed to place order. Please try again.");
+        const errMsg = err?.response?.data?.message || "Failed to place order. Please try again.";
+        setError(errMsg);
+        toast.error(errMsg);
       } finally {
         setPlacing(false);
       }
@@ -171,7 +178,9 @@ export default function Checkout() {
       try {
         const isScriptLoaded = await loadRazorpayScript();
         if (!isScriptLoaded) {
-          setError("Razorpay SDK failed to load. Please check your internet connection.");
+          const errMsg = "Razorpay SDK failed to load. Please check your internet connection.";
+          setError(errMsg);
+          toast.error("Razorpay SDK failed to load.");
           setPlacing(false);
           return;
         }
@@ -214,11 +223,15 @@ export default function Checkout() {
               if (verifyRes.data.success) {
                 await clearCart();
                 setOrderId(verifyRes.data.data._id);
+                toast.success("Payment successful! Order placed.");
               } else {
                 setError("Payment verification failed.");
+                toast.error("Payment verification failed.");
               }
             } catch (err) {
-              setError(err?.response?.data?.message || "Verification failed. Please contact support.");
+              const errMsg = err?.response?.data?.message || "Verification failed. Please contact support.";
+              setError(errMsg);
+              toast.error(errMsg);
             } finally {
               setPlacing(false);
             }

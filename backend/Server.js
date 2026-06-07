@@ -6,8 +6,20 @@ const compression = require("compression");
 const rateLimit = require("express-rate-limit");
 const errorMiddleware = require("./Middlewares/errorMiddleware");
 require("dotenv").config();
+const morgan = require("morgan");
+
+// Validate critical environment variables
+const criticalEnvVars = ["MONGO_URL", "JWT_SECRET"];
+const missingVars = criticalEnvVars.filter(v => !process.env[v]);
+if (missingVars.length > 0) {
+  console.error(`❌ CRITICAL ERROR: Missing required environment variables: ${missingVars.join(", ")}`);
+  process.exit(1);
+}
 
 const app = express();
+
+// Request logging middleware
+app.use(morgan("dev"));
 
 // Enable Trust Proxy for Render
 app.set("trust proxy", 1);
@@ -38,24 +50,10 @@ const allowedOrigins = [
   "https://wearly-frontend-htam.onrender.com"
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("Blocked Origin:", origin);
-        callback(null, false);
-      }
-    },
-    credentials: true
-  })
-);
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 app.options("*", cors());
 

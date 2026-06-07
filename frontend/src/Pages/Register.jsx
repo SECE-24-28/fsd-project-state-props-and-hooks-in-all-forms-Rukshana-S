@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { toast } from "react-toastify";
 import "../Assets/Css/auth.css";
 
 const EyeOpen = () => (
@@ -18,10 +19,6 @@ const EyeClosed = () => (
   </svg>
 );
 
-function Toast({ message, onClose }) {
-  React.useEffect(() => { const t = setTimeout(onClose, 2500); return () => clearTimeout(t); }, [onClose]);
-  return <div className="auth-toast auth-toast-success"><span>✓</span>{message}</div>;
-}
 
 function readFile(file) {
   return new Promise(res => { const r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(file); });
@@ -106,7 +103,6 @@ export default function Register() {
   const [errs, setErrs] = useState({});
   const [show, setShow] = useState({ password: false, confirm: false });
   const [media, setMedia] = useState({ logo: "", banner: "", coverImage: "" });
-  const [toast, setToast] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const set = (key, val) => { setForm(f => ({ ...f, [key]: val })); setErrs(e => ({ ...e, [key]: "" })); };
@@ -134,11 +130,12 @@ export default function Register() {
         password: form.password,
         phone: form.phone.trim(),
       });
-      setToast(true);
+      toast.success("Account created successfully!");
     } catch (err) {
       const msg = err?.response?.data?.message || "Registration failed.";
       if (msg.toLowerCase().includes("email")) setErrs({ email: "An account with this email already exists." });
       else setErrs({ general: msg });
+      toast.error(msg);
     }
   };
 
@@ -191,7 +188,6 @@ export default function Register() {
 
   return (
     <div className="auth-bg-page">
-      {toast && <Toast message="Account created successfully!" onClose={() => setToast(false)} />}
       <div className="auth-page-brand" onClick={() => navigate("/")}>WEARLY</div>
 
       <div className="auth-card premium-card" style={{ maxWidth: role === "store-admin" ? "640px" : "480px" }}>

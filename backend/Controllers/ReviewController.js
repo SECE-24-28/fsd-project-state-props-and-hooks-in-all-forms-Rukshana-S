@@ -1,9 +1,13 @@
+const mongoose = require("mongoose");
 const Review = require("../Models/ReviewModel");
 const Product = require("../Models/ProductModel");
 
 // GET /api/reviews/:productId
 const getProductReviews = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.productId)) {
+      return res.status(400).json({ success: false, message: "Invalid product ID format" });
+    }
     const reviews = await Review.find({ productId: req.params.productId }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, count: reviews.length, data: reviews });
   } catch (err) {
@@ -19,6 +23,10 @@ const addReview = async (req, res) => {
 
     if (!productId || !rating || !comment) {
       return res.status(400).json({ success: false, message: "productId, rating and comment are required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ success: false, message: "Invalid product ID format" });
     }
 
     const product = await Product.findById(productId);
