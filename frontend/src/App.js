@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { StoreProvider } from "./context/StoreContext";
 import { AdminProvider } from "./admin/context/AdminContext";
 import { AuthProvider }  from "./context/AuthContext";

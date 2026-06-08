@@ -19,7 +19,7 @@ export default function ProductDetails() {
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [selectedImage, setSelectedImage]     = useState(0);
   const [selectedSize, setSelectedSize]       = useState("");
-  const [qty, setQty]                 = useState(1);
+  const [qty]                         = useState(1);
   const [activeTab, setActiveTab]     = useState("details");
   const [zoomed, setZoomed]           = useState(false);
   const [zoomPos, setZoomPos]         = useState({ x: 50, y: 50 });

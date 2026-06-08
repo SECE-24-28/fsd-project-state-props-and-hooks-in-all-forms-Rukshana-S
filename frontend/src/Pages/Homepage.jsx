@@ -6,7 +6,6 @@ import Newsletter from "../Components/Newsletter";
 import FAQ from "../Components/FAQ";
 import { useStore } from "../context/StoreContext";
 import api from "../services/api";
-import { Link } from "react-router-dom";
 
 import bannerImg from "../Assets/images/banner.jpg";
 import c1 from "../Assets/images/collection1.jpg";

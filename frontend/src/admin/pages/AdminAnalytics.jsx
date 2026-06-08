@@ -1,17 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  LineChart, Line, PieChart, Pie, Cell, Legend 
+  LineChart, Line, PieChart, Pie, Cell 
 } from "recharts";
 import "../styles/AdminAnalytics.css";
 import { useAdmin } from "../context/AdminContext";
 
 const STORE_COLORS = ["#e9d5d6", "#d4b6b7", "#c9a8b0", "#b89aa0", "#a88090"];
 
-const STATUS_COLORS = {
-  Delivered: "#059669", Shipped: "#0891B2", Processing: "#7C3AED",
-  Pending: "#D97706", Cancelled: "#DC2626",
-};
 
 const exportToCSV = (filename, headers, rows) => {
   const csvContent = "data:text/csv;charset=utf-8," 

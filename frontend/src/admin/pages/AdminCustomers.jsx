@@ -3,7 +3,7 @@ import "../styles/AdminUsers.css";
 import { useAdmin } from "../context/AdminContext";
 
 export default function AdminCustomers() {
-  const { customers, deleteCustomer, toggleCustomerStatus } = useAdmin();
+  const { customers, deleteCustomer } = useAdmin();
   const [search, setSearch]     = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
