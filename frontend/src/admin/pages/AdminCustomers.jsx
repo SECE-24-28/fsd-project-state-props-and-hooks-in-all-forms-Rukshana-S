@@ -3,14 +3,14 @@ import "../styles/AdminUsers.css";
 import { useAdmin } from "../context/AdminContext";
 
 export default function AdminCustomers() {
-  const { customers, deleteCustomer } = useAdmin();
-  const [search, setSearch]     = useState("");
+  const { customers, deleteCustomer, toggleCustomerStatus } = useAdmin();
+  const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 8;
 
   const filtered = customers.filter(c =>
-    (c.name  || "").toLowerCase().includes(search.toLowerCase()) ||
+    (c.name || "").toLowerCase().includes(search.toLowerCase()) ||
     (c.email || "").toLowerCase().includes(search.toLowerCase())
   );
 
@@ -74,8 +74,8 @@ export default function AdminCustomers() {
                     <td style={{ fontSize: "0.82rem" }}>{c.createdAt ? new Date(c.createdAt).toLocaleDateString("en-IN") : c.registeredAt || "—"}</td>
                     <td>
                       <span className="adm-status-badge" style={{
-                         background: (c.status === "deactivated") ? "#FEE2E220" : "#D1FAE520",
-                         color:      (c.status === "deactivated") ? "#DC2626"   : "#059669",
+                        background: (c.status === "deactivated") ? "#FEE2E220" : "#D1FAE520",
+                        color: (c.status === "deactivated") ? "#DC2626" : "#059669",
                       }}>{c.status || "active"}</span>
                     </td>
                     <td>

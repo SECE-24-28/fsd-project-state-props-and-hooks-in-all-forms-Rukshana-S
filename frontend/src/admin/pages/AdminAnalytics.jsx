@@ -1,16 +1,20 @@
-import React, { useMemo } from "react";
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  LineChart, Line, PieChart, Pie, Cell 
+import React, { useMemo, useState } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  LineChart, Line, PieChart, Pie, Cell, Legend
 } from "recharts";
 import "../styles/AdminAnalytics.css";
 import { useAdmin } from "../context/AdminContext";
 
 const STORE_COLORS = ["#e9d5d6", "#d4b6b7", "#c9a8b0", "#b89aa0", "#a88090"];
 
+const STATUS_COLORS = {
+  Delivered: "#059669", Shipped: "#0891B2", Processing: "#7C3AED",
+  Pending: "#D97706", Cancelled: "#DC2626",
+};
 
 const exportToCSV = (filename, headers, rows) => {
-  const csvContent = "data:text/csv;charset=utf-8," 
+  const csvContent = "data:text/csv;charset=utf-8,"
     + [headers.join(","), ...rows.map(r => r.map(val => `"${String(val).replace(/"/g, '""')}"`).join(","))].join("\n");
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
@@ -24,8 +28,8 @@ const exportToCSV = (filename, headers, rows) => {
 export default function AdminAnalytics() {
   const { analytics, orders, products, customers, admins, storeApplications, isStoreAdmin } = useAdmin();
 
-  const storeAdmins  = (admins || []).filter(a => !(a.role || "").toLowerCase().includes("super"));
-  const pendingApps  = (storeApplications || []).filter(a => a.status === "pending").length;
+  const storeAdmins = (admins || []).filter(a => !(a.role || "").toLowerCase().includes("super"));
+  const pendingApps = (storeApplications || []).filter(a => a.status === "pending").length;
 
   const STATUS_COLORS = {
     Delivered: "#059669", Shipped: "#0891B2", Processing: "#7C3AED",
@@ -38,7 +42,7 @@ export default function AdminAnalytics() {
     products.forEach(p => { map[p.category] = (map[p.category] || 0) + 1; });
     return map;
   }, [products]);
-  
+
   const catChartData = useMemo(() => {
     return Object.entries(catMap).map(([name, value]) => ({ name, value }));
   }, [catMap]);
@@ -176,19 +180,19 @@ export default function AdminAnalytics() {
   }, [orders]);
 
   const statsCards = isStoreAdmin ? [
-    { label: "Total Revenue",        value: `₹${analytics.totalRevenue.toLocaleString("en-IN")}`, icon: "₹",  bg: "#f5f3ff", color: "#7C3AED" },
-    { label: "Total Orders",         value: orders.length,                                         icon: "📦", bg: "#f0fdf4", color: "#059669" },
-    { label: "Delivered Orders",     value: analytics.orderStatuses.Delivered || 0,                icon: "✅", bg: "#d1fae5", color: "#10b981" },
-    { label: "Cancelled Orders",     value: analytics.orderStatuses.Cancelled || 0,                icon: "❌", bg: "#fee2e2", color: "#ef4444" },
-    { label: "Pending Orders",       value: analytics.orderStatuses.Pending || 0,                  icon: "⏳", bg: "#fef3c7", color: "#f59e0b" },
-    { label: "Customer Count",       value: customers.length,                                      icon: "👥", bg: "#fffbeb", color: "#D97706" },
+    { label: "Total Revenue", value: `₹${analytics.totalRevenue.toLocaleString("en-IN")}`, icon: "₹", bg: "#f5f3ff", color: "#7C3AED" },
+    { label: "Total Orders", value: orders.length, icon: "📦", bg: "#f0fdf4", color: "#059669" },
+    { label: "Delivered Orders", value: analytics.orderStatuses.Delivered || 0, icon: "✅", bg: "#d1fae5", color: "#10b981" },
+    { label: "Cancelled Orders", value: analytics.orderStatuses.Cancelled || 0, icon: "❌", bg: "#fee2e2", color: "#ef4444" },
+    { label: "Pending Orders", value: analytics.orderStatuses.Pending || 0, icon: "⏳", bg: "#fef3c7", color: "#f59e0b" },
+    { label: "Customer Count", value: customers.length, icon: "👥", bg: "#fffbeb", color: "#D97706" },
   ] : [
-    { label: "Total Stores",         value: storeAdmins.length,                                   icon: "🏪", bg: "#f5e8e9", color: "#b8929a" },
-    { label: "Total Products",       value: products.length,                                       icon: "👗", bg: "#f0f7ff", color: "#0891B2" },
-    { label: "Total Orders",         value: orders.length,                                         icon: "📦", bg: "#f0fdf4", color: "#059669" },
-    { label: "Total Customers",      value: customers.length,                                      icon: "👥", bg: "#fffbeb", color: "#D97706" },
-    { label: "Revenue",              value: `₹${analytics.totalRevenue.toLocaleString("en-IN")}`, icon: "₹",  bg: "#f5f3ff", color: "#7C3AED" },
-    { label: "Pending Applications", value: pendingApps,                                          icon: "⏳", bg: "#fff7ed", color: "#EA580C" },
+    { label: "Total Stores", value: storeAdmins.length, icon: "🏪", bg: "#f5e8e9", color: "#b8929a" },
+    { label: "Total Products", value: products.length, icon: "👗", bg: "#f0f7ff", color: "#0891B2" },
+    { label: "Total Orders", value: orders.length, icon: "📦", bg: "#f0fdf4", color: "#059669" },
+    { label: "Total Customers", value: customers.length, icon: "👥", bg: "#fffbeb", color: "#D97706" },
+    { label: "Revenue", value: `₹${analytics.totalRevenue.toLocaleString("en-IN")}`, icon: "₹", bg: "#f5f3ff", color: "#7C3AED" },
+    { label: "Pending Applications", value: pendingApps, icon: "⏳", bg: "#fff7ed", color: "#EA580C" },
   ];
 
   const handleExportCSV = () => {
@@ -211,7 +215,7 @@ export default function AdminAnalytics() {
     } else {
       const headers = ["Metric Section", "Entity Name / Month", "Volume / Count", "Revenue Value (INR)"];
       const rows = [];
-      
+
       // Store Stats
       storeStats.forEach(s => {
         rows.push(["Store Performance Report", s.store, s.orders, s.revenue]);

@@ -1,21 +1,21 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import api from "../../services/api";
 
 const AdminContext = createContext();
 
 export function AdminProvider({ children }) {
-  const [orders,             setOrders]             = useState([]);
-  const [products,           setProducts]           = useState([]);
-  const [customers,          setCustomers]          = useState([]);
-  const [admins,             setAdmins]             = useState([]);
-  const [storeApplications,  setStoreApplications]  = useState([]);
-  const [notifications,      setNotifications]      = useState([]);
-  const [activityLogs,       setActivityLogs]       = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [admins, setAdmins] = useState([]);
+  const [storeApplications, setStoreApplications] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [activityLogs, setActivityLogs] = useState([]);
 
   // Derive role from JWT token via /users/profile — we read from shared token
   const [adminUser, setAdminUser] = useState(null);
 
-  const roleStr      = (adminUser?.role || "").toLowerCase().replace(/_/g, "-");
+  const roleStr = (adminUser?.role || "").toLowerCase().replace(/_/g, "-");
   const isSuperAdmin = roleStr.includes("super");
   const isStoreAdmin = roleStr.includes("store") && !roleStr.includes("super");
 
@@ -119,16 +119,16 @@ export function AdminProvider({ children }) {
   }, [adminUser]);
 
   // ── Notifications ─────────────────────────────────────────────────────────
-  const addNotification      = (notif) => setNotifications(prev => [{ id: Date.now(), ...notif, read: false, createdAt: new Date().toISOString() }, ...prev]);
+  const addNotification = (notif) => setNotifications(prev => [{ id: Date.now(), ...notif, read: false, createdAt: new Date().toISOString() }, ...prev]);
   const markNotificationRead = async (id) => {
     // Optimistic update
     setNotifications(prev => prev.map(n => n.id === id || n._id === id ? { ...n, read: true } : n));
-    try { await api.put(`/notifications/${id}`); } catch {}
+    try { await api.put(`/notifications/${id}`); } catch { }
   };
   const markAllRead = async () => {
     // Optimistic update
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    try { await api.put("/notifications/mark-all"); } catch {}
+    try { await api.put("/notifications/mark-all"); } catch { }
   };
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -139,8 +139,8 @@ export function AdminProvider({ children }) {
     setOrders([]); setProducts([]); setCustomers([]); setAdmins([]);
     setStoreApplications([]); setNotifications([]);
   };
-  const adminLogin           = () => false;
-  const setAdminSessionDirect = () => {};
+  const adminLogin = () => false;
+  const setAdminSessionDirect = () => { };
 
   // ── Store Applications ────────────────────────────────────────────────────
   const approveApplication = async (userId) => {
@@ -162,16 +162,16 @@ export function AdminProvider({ children }) {
 
   // ── Admin CRUD ────────────────────────────────────────────────────────────
   const deactivateAdmin = async (id) => {
-    try { await api.put(`/superadmin/deactivate/${id}`); await fetchAdmins(); } catch {}
+    try { await api.put(`/superadmin/deactivate/${id}`); await fetchAdmins(); } catch { }
   };
   const activateAdmin = async (id) => {
-    try { await api.put(`/superadmin/activate/${id}`); await fetchAdmins(); } catch {}
+    try { await api.put(`/superadmin/activate/${id}`); await fetchAdmins(); } catch { }
   };
   const deleteAdmin = async (id) => {
-    try { await api.delete(`/superadmin/delete/${id}`); await fetchAdmins(); } catch {}
+    try { await api.delete(`/superadmin/delete/${id}`); await fetchAdmins(); } catch { }
   };
-  const createAdmin      = () => {};
-  const updateAdmin      = () => {};
+  const createAdmin = () => { };
+  const updateAdmin = () => { };
   const toggleAdminStatus = (id) => {
     const admin = admins.find(a => (a._id || a.id) === id);
     if (!admin) return;
@@ -185,12 +185,12 @@ export function AdminProvider({ children }) {
     try {
       await api.put(`/orders/${id}`, { orderStatus });
       setOrders(prev => prev.map(o => (o._id || o.id) === id ? { ...o, orderStatus } : o));
-    } catch {}
+    } catch { }
   };
 
   // ── Customers ─────────────────────────────────────────────────────────────
-  const deleteCustomer       = (id) => setCustomers(prev => prev.filter(c => (c._id || c.id) !== id));
-  const restoreCustomer      = () => {};
+  const deleteCustomer = (id) => setCustomers(prev => prev.filter(c => (c._id || c.id) !== id));
+  const restoreCustomer = () => { };
   const toggleCustomerStatus = (id) => setCustomers(prev => prev.map(c =>
     (c._id || c.id) === id ? { ...c, status: c.status === "active" ? "inactive" : "active" } : c
   ));
@@ -217,12 +217,12 @@ export function AdminProvider({ children }) {
       setProducts(prev => prev.filter(p => (p._id || p.id) !== id));
     } catch (err) { console.error("deleteProduct:", err?.response?.data?.message); throw err; }
   };
-  const restoreProduct = () => {};
+  const restoreProduct = () => { };
 
   // ── Analytics (computed from real data) ──────────────────────────────────
   const analytics = {
-    totalRevenue:   orders.filter(o => o.orderStatus !== "Cancelled").reduce((s, o) => s + (Number(o.amount) || 0), 0),
-    totalOrders:    orders.length,
+    totalRevenue: orders.filter(o => o.orderStatus !== "Cancelled").reduce((s, o) => s + (Number(o.amount) || 0), 0),
+    totalOrders: orders.length,
     totalCustomers: customers.length,
     // Monthly sales — computed from real orders
     monthlySales: (() => {
@@ -254,11 +254,11 @@ export function AdminProvider({ children }) {
       return pct;
     })(),
     orderStatuses: {
-      Delivered:  orders.filter(o => o.orderStatus === "Delivered").length,
-      Shipped:    orders.filter(o => o.orderStatus === "Shipped").length,
+      Delivered: orders.filter(o => o.orderStatus === "Delivered").length,
+      Shipped: orders.filter(o => o.orderStatus === "Shipped").length,
       Processing: orders.filter(o => o.orderStatus === "Processing").length,
-      Pending:    orders.filter(o => o.orderStatus === "Pending").length,
-      Cancelled:  orders.filter(o => o.orderStatus === "Cancelled").length,
+      Pending: orders.filter(o => o.orderStatus === "Pending").length,
+      Cancelled: orders.filter(o => o.orderStatus === "Cancelled").length,
     },
   };
 
@@ -268,15 +268,15 @@ export function AdminProvider({ children }) {
     storePhone: "+91 422-4567-890",
     storeAddress: "126 D/10 A, Gandhipuram, Coimbatore - 641001",
     instagram: "https://instagram.com/wearly",
-    facebook:  "https://facebook.com/wearly",
+    facebook: "https://facebook.com/wearly",
     pinterest: "https://pinterest.com/wearly",
-    youtube:   "https://youtube.com/@wearly",
+    youtube: "https://youtube.com/@wearly",
   });
   const saveSettings = (data) => setSettings(data);
 
-  const [privacyPolicy,   setPrivacyPolicy]   = useState("WEARLY respects your privacy.");
+  const [privacyPolicy, setPrivacyPolicy] = useState("WEARLY respects your privacy.");
   const [termsConditions, setTermsConditions] = useState("By using WEARLY, you agree to our terms.");
-  const savePrivacyPolicy   = (t) => setPrivacyPolicy(t);
+  const savePrivacyPolicy = (t) => setPrivacyPolicy(t);
   const saveTermsConditions = (t) => setTermsConditions(t);
 
   return (

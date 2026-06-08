@@ -14,22 +14,22 @@ export default function ProductDetails() {
   const { user } = useAuth();
   const reviewsRef = useRef(null);
 
-  const [product, setProduct]         = useState(null);
-  const [loading, setLoading]         = useState(true);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState(0);
-  const [selectedImage, setSelectedImage]     = useState(0);
-  const [selectedSize, setSelectedSize]       = useState("");
-  const [qty]                         = useState(1);
-  const [activeTab, setActiveTab]     = useState("details");
-  const [zoomed, setZoomed]           = useState(false);
-  const [zoomPos, setZoomPos]         = useState({ x: 50, y: 50 });
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [qty, setQty] = useState(1);
+  const [activeTab, setActiveTab] = useState("details");
+  const [zoomed, setZoomed] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 
   // Reviews
-  const [reviews, setReviews]             = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [myRating, setMyRating]           = useState(5);
-  const [myComment, setMyComment]         = useState("");
-  const [reviewError, setReviewError]     = useState("");
+  const [myRating, setMyRating] = useState(5);
+  const [myComment, setMyComment] = useState("");
+  const [reviewError, setReviewError] = useState("");
   const [reviewSuccess, setReviewSuccess] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
 
@@ -103,16 +103,16 @@ export default function ProductDetails() {
   // ── Specifications ─────────────────────────────────────────────────────────
   const specs = product.specifications || {};
   const specRows = [
-    { label: "Fabric",             key: "fabric" },
-    { label: "Pattern",            key: "pattern" },
-    { label: "Occasion",           key: "occasion" },
-    { label: "Material",           key: "material" },
-    { label: "Fit",                key: "fit" },
-    { label: "Work Type",          key: "workType" },
-    { label: "Saree Length",       key: "sareeLength" },
-    { label: "Blouse Piece",       key: "blousePiece" },
-    { label: "Care Instructions",  key: "careInstructions" },
-    { label: "Country of Origin",  key: "countryOfOrigin" },
+    { label: "Fabric", key: "fabric" },
+    { label: "Pattern", key: "pattern" },
+    { label: "Occasion", key: "occasion" },
+    { label: "Material", key: "material" },
+    { label: "Fit", key: "fit" },
+    { label: "Work Type", key: "workType" },
+    { label: "Saree Length", key: "sareeLength" },
+    { label: "Blouse Piece", key: "blousePiece" },
+    { label: "Care Instructions", key: "careInstructions" },
+    { label: "Country of Origin", key: "countryOfOrigin" },
   ].filter(r => specs[r.key]);
 
   // ── Handlers ──────────────────────────────────────────────────────────────
@@ -140,7 +140,7 @@ export default function ProductDetails() {
       setReviewSuccess("Review submitted successfully!");
       setMyComment("");
       fetchReviews();
-      api.get(`/products/${id}`).then(res => setProduct(res.data.data)).catch(() => {});
+      api.get(`/products/${id}`).then(res => setProduct(res.data.data)).catch(() => { });
     } catch (err) {
       setReviewError(err?.response?.data?.message || "Failed to submit review.");
     } finally {
@@ -238,8 +238,8 @@ export default function ProductDetails() {
                 {product.stock === 0
                   ? <span className="pd-out-of-stock">Out of Stock</span>
                   : product.stock < 5
-                  ? <span className="pd-low-stock">Only {product.stock} left — order soon!</span>
-                  : <span className="pd-in-stock">In Stock ({product.stock} available)</span>
+                    ? <span className="pd-low-stock">Only {product.stock} left — order soon!</span>
+                    : <span className="pd-in-stock">In Stock ({product.stock} available)</span>
                 }
               </div>
 
@@ -350,10 +350,10 @@ export default function ProductDetails() {
           <div className="pd-tabs-card">
             <div className="pd-tabs-nav">
               {[
-                { key: "details",        label: "Details" },
+                { key: "details", label: "Details" },
                 { key: "specifications", label: "Specifications" },
-                { key: "fabric",         label: "Fabric & Care" },
-                { key: "shipping",       label: "Shipping" },
+                { key: "fabric", label: "Fabric & Care" },
+                { key: "shipping", label: "Shipping" },
               ].map(({ key, label }) => (
                 <button
                   key={key}

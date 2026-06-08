@@ -6,6 +6,7 @@ import Newsletter from "../Components/Newsletter";
 import FAQ from "../Components/FAQ";
 import { useStore } from "../context/StoreContext";
 import api from "../services/api";
+import { Link } from "react-router-dom";
 
 import bannerImg from "../Assets/images/banner.jpg";
 import c1 from "../Assets/images/collection1.jpg";
@@ -62,12 +63,12 @@ export default function Homepage() {
                 <input type="text" placeholder="Search silk sarees, linen kurtas, streetwear..." />
                 <button className="icon-button" aria-label="Search">
                   <span className="icon-svg">
-                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l4.25 4.25 1.49-1.49L15.5 14zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l4.25 4.25 1.49-1.49L15.5 14zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" /></svg>
                   </span>
                 </button>
               </div>
               <div className="hero-ctas">
-                {[["women","Shop Women"],["men","Shop Men"],["kids","Shop Kids"],["ethnic","Ethnic Wear"]].map(([cat, label]) => (
+                {[["women", "Shop Women"], ["men", "Shop Men"], ["kids", "Shop Kids"], ["ethnic", "Ethnic Wear"]].map(([cat, label]) => (
                   <button key={cat} className="hero-cta-btn" onClick={() => goTo(`/products?category=${cat}`)}>{label}</button>
                 ))}
               </div>
