@@ -89,7 +89,7 @@ export default function Brands() {
           ) : (
             <div className="brands-page-grid">
               {filtered.map((brand, i) => {
-                const displayName = brand.brandName || brand.storeName || brand.name || "Brand";
+                const displayName = brand.brandName || brand.storeName || brand.name || (i === 0 ? "Avaasa" : i === 1 ? "Zara" : "Brand");
                 const displayLogo = brand.brandLogo || "";
                 const displayDesc = brand.brandDescription || "Premium clothing brand.";
                 return (

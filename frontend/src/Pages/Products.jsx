@@ -5,8 +5,8 @@ import ProductCard from "../Components/ProductCard";
 import Loading from "../Components/Loading";
 import "../Assets/Css/products.css";
 
-const CATEGORIES = ["All", "women", "men", "kids", "ethnic"];
-const CAT_LABELS  = { All: "All", women: "Women", men: "Men", kids: "Kids", ethnic: "Ethnic Wear" };
+const CATEGORIES = ["All", "Women", "Men", "Kids", "Ethnic Wear"];
+const CAT_LABELS  = { All: "All", Women: "Women", Men: "Men", Kids: "Kids", "Ethnic Wear": "Ethnic Wear" };
 
 export default function Products() {
   const { products, productsLoading, fetchProducts } = useStore();
@@ -14,9 +14,10 @@ export default function Products() {
   const initCat   = searchParams.get("category") || "All";
   const initBrand = searchParams.get("brand") || "";
 
-  const [search, setSearch]     = useState(initBrand);
-  const [debouncedSearch, setDebouncedSearch] = useState(initBrand);
+  const [search, setSearch]     = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [category, setCategory] = useState(CATEGORIES.includes(initCat) ? initCat : "All");
+  const [selectedBrand, setSelectedBrand] = useState(initBrand);
   const [sort, setSort]         = useState("newest");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -29,10 +30,7 @@ export default function Products() {
     const cat = searchParams.get("category") || "All";
     setCategory(CATEGORIES.includes(cat) ? cat : "All");
     const brand = searchParams.get("brand") || "";
-    if (brand) {
-      setSearch(brand);
-      setDebouncedSearch(brand);
-    }
+    setSelectedBrand(brand);
   }, [searchParams]);
 
   // Debounce search input
@@ -43,23 +41,67 @@ export default function Products() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  // Fetch products from server when query parameters change
+  // Fetch products from server (mostly just getting all products to filter locally)
   useEffect(() => {
     fetchProducts({
-      search: debouncedSearch,
-      category: category === "All" ? "" : category,
-      sort,
-      minPrice,
-      maxPrice,
+      // optionally pass params, but we do local filtering below
     });
-  }, [debouncedSearch, category, sort, minPrice, maxPrice, fetchProducts]);
+  }, [fetchProducts]);
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [category, debouncedSearch, sort, minPrice, maxPrice]);
+  }, [category, debouncedSearch, selectedBrand, sort, minPrice, maxPrice]);
 
-  const filtered = products;
+  const filtered = useMemo(() => {
+    let result = [...products];
+
+    if (debouncedSearch) {
+      const q = debouncedSearch.toLowerCase();
+      result = result.filter(p => 
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.brand && p.brand.toLowerCase().includes(q)) ||
+        (p.sellerName && p.sellerName.toLowerCase().includes(q))
+      );
+    }
+
+    if (category && category.toLowerCase() !== "all") {
+      const c = category.trim().toLowerCase();
+      result = result.filter(p => p.category?.trim().toLowerCase() === c);
+    }
+
+    if (selectedBrand) {
+      const b = selectedBrand.trim().toLowerCase();
+      result = result.filter(p => 
+        (p.brand?.trim().toLowerCase() === b) || 
+        (p.brandName?.trim().toLowerCase() === b) || 
+        (p.sellerName?.trim().toLowerCase() === b)
+      );
+    }
+
+    if (minPrice) {
+      result = result.filter(p => p.price >= Number(minPrice));
+    }
+    
+    if (maxPrice) {
+      result = result.filter(p => p.price <= Number(maxPrice));
+    }
+
+    // Sort logic
+    if (sort === "low") {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sort === "high") {
+      result.sort((a, b) => b.price - a.price);
+    } else if (sort === "newest") {
+      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sort === "rating") {
+      result.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+    } else if (sort === "popularity") {
+      result.sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
+    }
+
+    return result;
+  }, [products, debouncedSearch, category, selectedBrand, minPrice, maxPrice, sort]);
 
   // Derive unique brands from current products for display
   const brandList = useMemo(() => {
@@ -76,6 +118,7 @@ export default function Products() {
     setCategory("All");
     setSearch("");
     setDebouncedSearch("");
+    setSelectedBrand("");
     setMinPrice("");
     setMaxPrice("");
     setSort("newest");
@@ -92,24 +135,7 @@ export default function Products() {
                 <button className="btn-clear-filters" onClick={clearFilters}>Clear All</button>
               </div>
 
-              <div className="filter-group">
-                <p className="filter-title">Search</p>
-                <div className="hero-search-wrapper" style={{ marginBottom: 0 }}>
-                  <input type="text" placeholder="Search name, brand, store..." value={search} onChange={e => setSearch(e.target.value)} />
-                </div>
-              </div>
 
-              <div className="filter-group">
-                <p className="filter-title">Category</p>
-                <div className="filter-options">
-                  {CATEGORIES.map(cat => (
-                    <label key={cat} className="filter-label">
-                      <input type="radio" name="category" checked={category === cat} onChange={() => setCategory(cat)} />
-                      {CAT_LABELS[cat]}
-                    </label>
-                  ))}
-                </div>
-              </div>
 
               <div className="filter-group">
                 <p className="filter-title">Price Range</p>
@@ -132,8 +158,8 @@ export default function Products() {
                     {brandList.slice(0, 8).map(brand => (
                       <label key={brand} className="filter-label">
                         <input type="checkbox"
-                          checked={search === brand}
-                          onChange={e => setSearch(e.target.checked ? brand : "")}
+                          checked={selectedBrand === brand}
+                          onChange={e => setSelectedBrand(e.target.checked ? brand : "")}
                         />
                         {brand}
                       </label>

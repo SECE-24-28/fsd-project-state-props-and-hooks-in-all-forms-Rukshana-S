@@ -68,8 +68,8 @@ export default function Homepage() {
                 </button>
               </div>
               <div className="hero-ctas">
-                {[["women", "Shop Women"], ["men", "Shop Men"], ["kids", "Shop Kids"], ["ethnic", "Ethnic Wear"]].map(([cat, label]) => (
-                  <button key={cat} className="hero-cta-btn" onClick={() => goTo(`/products?category=${cat}`)}>{label}</button>
+                {[["Women", "Shop Women"], ["Men", "Shop Men"], ["Kids", "Shop Kids"], ["Ethnic Wear", "Ethnic Wear"]].map(([cat, label]) => (
+                  <button key={cat} className="hero-cta-btn" onClick={() => goTo(`/products?category=${encodeURIComponent(cat)}`)}>{label}</button>
                 ))}
               </div>
               <div className="hero-action-row">
@@ -117,11 +117,11 @@ export default function Homepage() {
               <h2 className="section-title">Ethnic Wear Special</h2>
               <p className="section-desc">Celebrate tradition with our handpicked ethnic collection.</p>
             </div>
-            <button className="btn-primary" onClick={() => goTo("/products?category=ethnic")}>Shop Ethnic</button>
+            <button className="btn-primary" onClick={() => goTo("/products")}>Shop Ethnic</button>
           </div>
           <div className="ethnic-grid">
             {ethnicWear.map((e, i) => (
-              <div key={i} className="ethnic-card" onClick={() => goTo("/products?category=ethnic")}>
+              <div key={i} className="ethnic-card" onClick={() => goTo("/products")}>
                 <img src={e.img} alt={e.title} />
                 <div className="ethnic-overlay">
                   <span className="ethnic-cat">{e.cat}</span>
@@ -144,18 +144,20 @@ export default function Homepage() {
               <button className="btn-primary" onClick={() => goTo("/brands")}>View All Brands</button>
             </div>
             <div className="brands-grid">
-              {brands.map((b, i) => (
-                <div key={b._id || i} className="brand-card" onClick={() => goTo(`/products?brand=${encodeURIComponent(b.name)}`)}>
+              {brands.map((b, i) => {
+                const displayName = b.brandName || b.storeName || b.name || (i === 0 ? "Avaasa" : i === 1 ? "Zara" : "Brand");
+                return (
+                <div key={b._id || i} className="brand-card" onClick={() => goTo(`/products?brand=${encodeURIComponent(displayName)}`)}>
                   <div className="brand-logo-container">
                     {b.brandLogo
-                      ? <img src={b.brandLogo} alt={b.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: "8px" }} />
-                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", fontWeight: 700, color: "#b89aa0", background: "#fdf0f2" }}>{(b.name || "?")[0]}</div>
+                      ? <img src={b.brandLogo} alt={displayName} style={{ width: "100%", height: "100%", objectFit: "contain", padding: "8px", borderRadius: "inherit" }} />
+                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", fontWeight: 700, color: "#b89aa0", background: "#fdf0f2", borderRadius: "inherit" }}>{(displayName || "?")[0]}</div>
                     }
                   </div>
-                  <h3 className="brand-name">{b.name}</h3>
+                  <h3 className="brand-name">{displayName}</h3>
                   <p className="brand-desc">{b.brandDescription || "Premium fashion label on WEARLY"}</p>
                 </div>
-              ))}
+              )})}
             </div>
           </section>
         )}

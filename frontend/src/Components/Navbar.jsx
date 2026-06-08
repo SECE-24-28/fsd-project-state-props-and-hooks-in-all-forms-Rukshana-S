@@ -283,7 +283,7 @@ export default function Navbar() {
       />
 
       {/* ── Side Drawer ── */}
-      <aside className={`nb-drawer${drawerOpen ? " nb-drawer-open" : ""}`} aria-hidden={!drawerOpen}>
+      <aside className={`nb-drawer${drawerOpen ? " nb-drawer-open" : ""}`}>
 
         <div className="nb-drawer-header">
           <span className="nb-drawer-logo">WEARLY</span>

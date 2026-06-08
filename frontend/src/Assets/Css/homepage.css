@@ -774,7 +774,7 @@
 
     .brands-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 24px;
     }
 
@@ -790,6 +790,7 @@
       cursor: pointer;
       transition: var(--transition-normal);
       border: 1px solid rgba(233, 213, 214, 0.3);
+      height: 100%;
     }
 
     .brand-card:hover {
@@ -813,7 +814,9 @@
     .brand-logo-container img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      padding: 10px;
+      border-radius: inherit;
     }
 
     .brand-name {
@@ -3588,7 +3591,7 @@
     /* Brand page grid */
     .brands-page-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 28px;
       padding-bottom: 80px;
     }
@@ -3626,7 +3629,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 16px;
+      padding: 10px;
       transition: transform 0.3s ease;
     }
 
