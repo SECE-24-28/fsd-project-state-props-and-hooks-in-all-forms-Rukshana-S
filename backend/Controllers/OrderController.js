@@ -8,9 +8,24 @@ const CUSTOMER_CANCELLABLE = ["Pending", "Processing", "Confirmed", "Packed"];
 // POST /api/orders
 const createOrder = async (req, res) => {
   try {
-    const { products, amount, address, paymentMethod } = req.body;
+    const { products, amount, address, paymentMethod, couponCode } = req.body;
     if (!products || !products.length || !amount || !address) {
       return res.status(400).json({ success: false, message: "products, amount and address are required" });
+    }
+
+    let appliedCouponData = { code: "", type: "" };
+    if (couponCode) {
+      const Coupon = require("../Models/CouponModel");
+      const coupon = await Coupon.findOne({ code: couponCode, userId: req.user.id });
+      if (coupon && coupon.used) {
+        return res.status(400).json({ success: false, message: "Coupon already used" });
+      }
+      if (coupon && !coupon.used) {
+        coupon.used = true;
+        coupon.usedAt = new Date();
+        await coupon.save();
+        appliedCouponData = { code: coupon.code, type: coupon.type };
+      }
     }
 
     // ── 1. Verify stock ──────────────────────────────────────────────────────
@@ -79,6 +94,7 @@ const createOrder = async (req, res) => {
       paymentMethod: paymentMethod || "cod",
       paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
       sellerName:    topSellerName,
+      appliedCoupon: appliedCouponData,
     });
 
     const Cart = require("../Models/CartModel");

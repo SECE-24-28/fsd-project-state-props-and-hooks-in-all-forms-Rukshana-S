@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getMyCoupons, applyCoupon } = require("../Controllers/CouponController");
+const { getSpinStatus, performSpin } = require("../Controllers/spinController");
 const { verifyToken } = require("../Utils/verifyToken");
 const asyncHandler = require("../Middlewares/asyncHandler");
 
-router.get("/my", verifyToken, asyncHandler(getMyCoupons));
-router.post("/apply", verifyToken, asyncHandler(applyCoupon));
+router.get("/status", verifyToken, asyncHandler(getSpinStatus));
+router.post("/", verifyToken, asyncHandler(performSpin));
 
 module.exports = router;

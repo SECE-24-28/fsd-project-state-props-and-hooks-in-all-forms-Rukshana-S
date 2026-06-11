@@ -42,6 +42,10 @@ const OrderSchema = new mongoose.Schema(
     // Who cancelled: "customer" | "admin" | ""
     cancelledBy:  { type: String, enum: ["customer", "admin", ""], default: "" },
     sellerName:   { type: String, default: "" },
+    appliedCoupon: {
+      code: { type: String, default: "" },
+      type: { type: String, default: "" },
+    },
   },
   { timestamps: true }
 );
