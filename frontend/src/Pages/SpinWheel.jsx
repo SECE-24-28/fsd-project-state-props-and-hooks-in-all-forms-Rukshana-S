@@ -4,12 +4,7 @@ import SpinWheelComponent from "../Components/SpinWheelComponent";
 import api from "../services/api";
 import "../Assets/Css/spinwheel.css";
 
-const PRIZE_MAP = {
-  "15_OFF": 0,
-  "FREE_SHIPPING": 1,
-  "NOT_LUCKY": 2,
-  "25_OFF": 3
-};
+
 
 const SpinWheel = () => {
   const [mustSpin, setMustSpin] = useState(false);
@@ -96,7 +91,11 @@ const SpinWheel = () => {
     return (
       <>
         <h2>Congratulations!</h2>
-        <p style={{ fontSize: "1.2rem", fontWeight: "600", margin: "10px 0" }}>You won {title}</p>
+        {prizeResult.prize === "FREE_SHIPPING" ? (
+          <p style={{ fontSize: "1.2rem", fontWeight: "600", margin: "10px 0" }}>Free Shipping unlocked</p>
+        ) : (
+          <p style={{ fontSize: "1.2rem", fontWeight: "600", margin: "10px 0" }}>You won {title}</p>
+        )}
         <p style={{ color: "#666", marginBottom: "5px" }}>Coupon Code:</p>
         <div className="coupon-box" style={{ marginTop: 0 }}>
           <span className="coupon-code" style={{ letterSpacing: "1px", fontWeight: "bold" }}>{prizeResult.coupon}</span>

@@ -1,0 +1,88 @@
+.wheel-wrapper {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 40px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pointer-container {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.pointer {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 40px solid #b8929a; /* Rose-gold luxury color */
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.25));
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  border: 6px solid #e9d9dc;
+  overflow: hidden;
+  position: relative;
+  /* Will-change helps with animation performance */
+  will-change: transform;
+}
+
+.wheel-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: conic-gradient(from -30deg, 
+    #efe3e5 0deg 60deg, 
+    #2f2f2f 60deg 120deg, 
+    #efe3e5 120deg 180deg, 
+    #2f2f2f 180deg 240deg, 
+    #efe3e5 240deg 300deg, 
+    #2f2f2f 300deg 360deg
+  );
+  border-radius: 50%;
+}
+
+.hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: 5px solid #b8929a;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 5;
+}
+
+.wheel-text-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* We don't use conic-gradient for text, we just rotate the wrapper */
+}
+
+.wheel-text {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.2;
+}
