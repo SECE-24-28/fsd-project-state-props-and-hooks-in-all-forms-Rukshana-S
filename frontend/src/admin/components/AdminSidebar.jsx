@@ -15,6 +15,7 @@ export default function AdminSidebar() {
   ];
   const SUPER_NAV = [
     { to: "/admin/admins", label: "Admin Management" },
+    { to: "/admin/messages", label: "Messages" },
   ];
 
   return (

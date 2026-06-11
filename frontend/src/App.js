@@ -31,6 +31,7 @@ import AdminSettings from "./admin/pages/AdminSettings";
 import AdminPrivacy from "./admin/pages/AdminPrivacy";
 import AdminTerms from "./admin/pages/AdminTerms";
 import AdminManagement from "./admin/pages/AdminManagement";
+import AdminMessages from "./admin/pages/AdminMessages";
 import StoreApplications from "./admin/pages/StoreApplications";
 import ActivityLogs from "./admin/pages/ActivityLogs";
 import Trash from "./admin/pages/Trash";
@@ -59,7 +60,7 @@ const Wishlist = React.lazy(() => import("./Pages/Wishlist"));
 const Login = React.lazy(() => import("./Pages/Login"));
 const Register = React.lazy(() => import("./Pages/Register"));
 const ForgotPassword = React.lazy(() => import("./Pages/ForgotPassword"));
-const ResetPassword = React.lazy(() => import("./Pages/ResetPassword"));
+const MyMessages = React.lazy(() => import("./Pages/MyMessages"));
 const FAQPage = React.lazy(() => import("./Pages/FAQPage"));
 const PrivacyPolicy = React.lazy(() => import("./Pages/PrivacyPolicy"));
 const TermsConditions = React.lazy(() => import("./Pages/TermsConditions"));
@@ -101,7 +102,7 @@ function StoreLayout() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/my-messages" element={<ProtectedRoute><MyMessages /></ProtectedRoute>} />
           <Route path="/spin-wheel" element={<ProtectedRoute><SpinWheel /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -140,6 +141,7 @@ function AppRoutes() {
             <Route path="privacy" element={<AdminRoute superOnly><AdminPrivacy /></AdminRoute>} />
             <Route path="terms" element={<AdminRoute superOnly><AdminTerms /></AdminRoute>} />
             <Route path="admins" element={<AdminRoute superOnly><AdminManagement /></AdminRoute>} />
+            <Route path="messages" element={<AdminRoute superOnly><AdminMessages /></AdminRoute>} />
             <Route path="store-applications" element={<AdminRoute superOnly><StoreApplications /></AdminRoute>} />
             <Route path="activity" element={<AdminRoute superOnly><ActivityLogs /></AdminRoute>} />
             <Route path="trash" element={<AdminRoute superOnly><Trash /></AdminRoute>} />

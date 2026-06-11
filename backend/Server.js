@@ -76,6 +76,7 @@ const PaymentRoutes      = require("./Routes/PaymentRoutes");
 const ReviewRoutes       = require("./Routes/ReviewRoutes");
 const CouponRoutes       = require("./Routes/CouponRoutes");
 const SpinRoutes         = require("./Routes/spinRoutes");
+const ContactRoutes      = require("./Routes/ContactRoutes");
 
 app.use("/api/users",         UserRoutes);
 app.use("/api/products",      ProductRoutes);
@@ -89,6 +90,7 @@ app.use("/api/payment",       PaymentRoutes);
 app.use("/api/reviews",       ReviewRoutes);
 app.use("/api/coupons",       CouponRoutes);
 app.use("/api/spin",          SpinRoutes);
+app.use("/api/contact",       ContactRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({

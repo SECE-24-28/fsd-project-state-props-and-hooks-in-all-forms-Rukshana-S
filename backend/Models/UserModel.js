@@ -13,6 +13,8 @@ const UserSchema = new mongoose.Schema(
     brandLogo:        { type: String, default: "" },
     brandDescription: { type: String, default: "" },
     profileImage:     { type: String, default: "" },
+    resetOtp:         { type: String },
+    resetOtpExpire:   { type: Date },
     addresses: [
       {
         name:        { type: String },

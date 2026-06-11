@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://wearly-backend-tihq.onrender.com/api",
+   baseURL: "https://wearly-backend-tihq.onrender.com/api",
   withCredentials: true,
   timeout: 30000
 });

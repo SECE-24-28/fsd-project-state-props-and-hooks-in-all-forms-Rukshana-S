@@ -22,6 +22,7 @@ const BASE_NAV = [
   { to: "/admin/store-applications", label: "Seller Requests" },
   { to: "/admin/settings",           label: "Settings" },
   { to: "/admin/admins",             label: "Seller Management" },
+  { to: "/admin/messages",           label: "Messages" },
 ];
 
 export default function AdminLayout() {

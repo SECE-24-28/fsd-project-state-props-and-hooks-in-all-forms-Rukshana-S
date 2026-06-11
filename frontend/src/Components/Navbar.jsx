@@ -252,6 +252,7 @@ export default function Navbar() {
                         <hr className="nb-dropdown-hr" />
                         <button className="nb-dropdown-item" onClick={() => goTo("/wishlist")}>Wishlist</button>
                         <button className="nb-dropdown-item" onClick={() => goTo("/orders")}>My Orders</button>
+                        <button className="nb-dropdown-item" onClick={() => goTo("/my-messages")}>My Messages</button>
                         <button className="nb-dropdown-item" onClick={() => goTo("/cart")}>Cart</button>
                         <hr className="nb-dropdown-hr" />
                         <button className="nb-dropdown-item nb-dropdown-logout" onClick={handleLogout}>Logout</button>

@@ -197,21 +197,69 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
-    res.status(200).json({ success: true, message: "Reset link generated successfully" });
+
+    // Generate 6 digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.resetOtp = otp;
+    user.resetOtpExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save();
+
+    const sendEmail = require("../Utils/sendEmail");
+    await sendEmail({
+      to: user.email,
+      subject: "WEARLY - Password Reset OTP",
+      text: `Hello ${user.name},\n\nYour password reset OTP is: ${otp}\nThis OTP is valid for 10 minutes.\n\nRegards,\nThe WEARLY Team`
+    });
+
+    res.status(200).json({ success: true, message: "OTP sent successfully" });
   } catch (err) {
     res.status(500).json({ success: false, message: "Error in forgot password request", error: err.message });
   }
 };
 
-const resetPassword = async (req, res) => {
+const verifyOTP = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, otp } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
+
+    if (!user.resetOtp || user.resetOtp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (user.resetOtpExpire < Date.now()) {
+      return res.status(400).json({ success: false, message: "OTP has expired" });
+    }
+
+    res.status(200).json({ success: true, message: "OTP verified successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Error verifying OTP", error: err.message });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, password } = req.body;
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (!user.resetOtp || user.resetOtp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (user.resetOtpExpire < Date.now()) {
+      return res.status(400).json({ success: false, message: "OTP has expired" });
+    }
+
     user.password = await bcrypt.hash(password, 10);
+    user.resetOtp = undefined;
+    user.resetOtpExpire = undefined;
     await user.save();
+    
     res.status(200).json({ success: true, message: "Password reset successfully" });
   } catch (err) {
     res.status(500).json({ success: false, message: "Password reset failed", error: err.message });
@@ -230,4 +278,13 @@ const getApprovedBrands = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getProfile, updateProfile, forgotPassword, resetPassword, getApprovedBrands };
+module.exports = { 
+  registerUser, 
+  loginUser, 
+  getProfile, 
+  updateProfile, 
+  forgotPassword, 
+  verifyOTP,
+  resetPassword, 
+  getApprovedBrands 
+};
