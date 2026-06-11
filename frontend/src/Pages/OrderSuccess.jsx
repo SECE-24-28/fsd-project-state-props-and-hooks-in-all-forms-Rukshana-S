@@ -59,6 +59,15 @@ export default function OrderSuccess() {
                 Your order has been confirmed.
               </p>
 
+              {order?.appliedCoupon && order.appliedCoupon.code && (
+                <div style={{ margin: "20px 0", padding: "12px", borderRadius: "8px", background: "#d1fae5", color: "#059669", fontWeight: 600, border: "1px solid #a7f3d0", textAlign: "center" }}>
+                  Reward Applied Successfully ✓ <br/>
+                  <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+                    {order.appliedCoupon.type === "15_OFF" ? "15% OFF" : order.appliedCoupon.type === "25_OFF" ? "25% OFF" : "FREE SHIPPING"} Coupon Used
+                  </span>
+                </div>
+              )}
+
               {/* Order Details */}
               <div className="os-details">
                 <div className="os-detail-row">

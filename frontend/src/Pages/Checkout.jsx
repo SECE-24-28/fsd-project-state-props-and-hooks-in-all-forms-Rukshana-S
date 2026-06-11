@@ -42,7 +42,7 @@ export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState(null); // { code, discountAmount }
+  const [appliedCoupon, setAppliedCoupon] = useState(null); // { code, discountAmount, type }
   const [discountAmount, setDiscountAmount] = useState(0);
 
   // Address Profile states
@@ -57,8 +57,9 @@ export default function Checkout() {
   }, []); // eslint-disable-line
 
   const subtotal = cartItems.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
-  const gst      = Math.round((subtotal - discountAmount) * 0.05);
-  const shipping = (subtotal - discountAmount) > 999 ? 0 : 99;
+  const gst      = Math.round(subtotal * 0.05); // GST usually calculated before or after discount depending on rules, but prompt examples show fixed GST. Let's keep it based on subtotal. 
+  // Wait, the prompt example: Subtotal 1000, GST 50, Shipping 80, Total 1130. Apply 15% (150): Discount 150, GST 50, Shipping 80, Total 980. So GST is based on subtotal before discount!
+  const shipping = appliedCoupon && appliedCoupon.type === "FREE_SHIPPING" ? 0 : 80;
   const grand    = Math.max(0, subtotal - discountAmount + gst + shipping);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -106,13 +107,17 @@ export default function Checkout() {
     setCouponError("");
     try {
       const res = await api.post("/coupons/apply", { code: couponCode, amount: subtotal });
+      const pct = res.data.discountPercentage || 0;
+      const type = res.data.type;
+      const discAmt = type === "FREE_SHIPPING" ? 0 : Math.round((subtotal + gst) * (pct / 100));
       setAppliedCoupon({
-        code: res.data.data.code,
-        discountAmount: res.data.data.discountAmount,
+        code: res.data.code || couponCode,
+        discountAmount: discAmt,
+        type: type
       });
-      setDiscountAmount(res.data.data.discountAmount);
+      setDiscountAmount(discAmt);
       setCouponError("");
-      toast.success(`Coupon "${res.data.data.code}" applied successfully!`);
+      toast.success(`Coupon "${couponCode}" applied successfully!`);
     } catch (err) {
       const errMsg = err?.response?.data?.message || "Invalid coupon code";
       setCouponError(errMsg);
@@ -163,7 +168,7 @@ export default function Checkout() {
 
     if (payMethod === "cod") {
       try {
-        const id = await placeOrder(address, "cod", cartItems, { total: grand });
+        const id = await placeOrder(address, "cod", cartItems, { total: grand, couponCode: appliedCoupon?.code });
         setOrderId(id);
         toast.success("Order placed successfully!");
       } catch (err) {
@@ -217,6 +222,7 @@ export default function Checkout() {
                   })),
                   amount: grand,
                   address,
+                  couponCode: appliedCoupon?.code
                 },
               });
 

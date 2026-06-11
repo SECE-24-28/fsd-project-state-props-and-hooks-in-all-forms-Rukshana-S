@@ -8,6 +8,8 @@ import ErrorBoundary from "./Components/ErrorBoundary";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Components/Loading";
+import ScrollToTop from "./Components/ScrollToTop";
+import BackToTop from "./Components/BackToTop";
 
 
 // ── Admin layout & guards
@@ -44,6 +46,7 @@ import RejectedPage from "./Pages/storeadmin/RejectedPage";
 // ── Public store pages
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
+import FloatingSpinWidget from "./Components/FloatingSpinWidget";
 
 // Code splitting / Lazy loading store pages
 const Homepage = React.lazy(() => import("./Pages/Homepage"));
@@ -66,6 +69,7 @@ const NotFound = React.lazy(() => import("./Pages/NotFound"));
 const Brands = React.lazy(() => import("./Pages/Brands"));
 const MyOrders = React.lazy(() => import("./Pages/MyOrders"));
 const OrderTracking = React.lazy(() => import("./Pages/OrderTracking"));
+const SpinWheel = React.lazy(() => import("./Pages/SpinWheel"));
 
 const NO_CHROME = ["/login", "/register", "/forgot-password", "/reset-password"];
 
@@ -98,9 +102,12 @@ function StoreLayout() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/spin-wheel" element={<ProtectedRoute><SpinWheel /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </React.Suspense>
+      {!hide && <FloatingSpinWidget />}
+      {!hide && <BackToTop />}
       {!hide && <Footer />}
     </>
   );
@@ -161,6 +168,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
+        <ScrollToTop />
         <StoreProvider>
           <AppRoutes />
           <ToastContainer position="top-right" autoClose={3000} />

@@ -1,0 +1,255 @@
+.spin-page {
+  padding: 60px 20px;
+  background-color: #f8ecee; /* Light pink background */
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Outfit", "Inter", sans-serif;
+}
+
+.spin-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.spin-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin-bottom: 10px;
+}
+
+.spin-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  font-weight: 400;
+}
+
+.spin-container {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.spin-btn {
+  margin-top: 30px;
+  padding: 14px 40px;
+  background-color: #2b2b2b;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(43, 43, 43, 0.3);
+}
+
+.spin-btn:hover {
+  background-color: #444;
+  transform: translateY(-2px);
+}
+
+.spin-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spin-status-msg {
+  margin-top: 20px;
+  padding: 30px;
+  background: #f7e8eb;
+  border-radius: 20px;
+  color: #2b2b2b;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.spin-status-msg span {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+/* Modal */
+.spin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(43, 43, 43, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.spin-modal {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.spin-modal h2 {
+  color: #2b2b2b;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.spin-modal p {
+  color: #555;
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+}
+
+.coupon-box {
+  background-color: #f8ecee;
+  border: 2px dashed #b8929a;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.coupon-code {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  letter-spacing: 1px;
+}
+
+.copy-btn {
+  background: none;
+  border: none;
+  color: #059669;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.copy-btn:hover {
+  background-color: rgba(5, 150, 105, 0.1);
+}
+
+.close-modal-btn {
+  padding: 10px 30px;
+  background-color: #2b2b2b;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.close-modal-btn:hover {
+  background-color: #444;
+}
+
+/* Rewards Section */
+.rewards-section {
+  margin-top: 60px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.rewards-title {
+  font-size: 1.8rem;
+  color: #2b2b2b;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.rewards-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.reward-card {
+  width: 300px;
+  min-height: 220px;
+  padding: 25px;
+  border-radius: 25px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+  box-sizing: border-box;
+}
+
+.reward-card:hover {
+  transform: translateY(-5px);
+}
+
+.reward-card.used {
+  background: #f5f5f5;
+  opacity: 0.8;
+}
+
+.reward-type {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin-bottom: 10px;
+}
+
+.reward-code {
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: #555;
+  background: #f8ecee;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.reward-status {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.status-unused {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.status-used {
+  background-color: #e5e7eb;
+  color: #4b5563;
+}

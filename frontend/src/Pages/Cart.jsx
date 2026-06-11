@@ -3,12 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import { useAuth } from "../context/AuthContext";
 import { ShoppingBag, Tag, ArrowRight } from "lucide-react";
+import api from "../services/api";
 import "../Assets/Css/cart.css";
 
-const COUPONS = {
-  SELLER70: { pct: 70, label: "SELLER70 — 70% OFF" },
-  WELCOME10: { pct: 10, label: "WELCOME10 — 10% OFF" },
-};
 const GST_RATE = 0.05;
 
 export default function Cart() {
@@ -30,18 +27,27 @@ export default function Cart() {
 
   const subtotal    = cartItems.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
   const gst         = Math.round(subtotal * GST_RATE);
-  const shipping    = subtotal > 999 ? 0 : 99;
-  const discountAmt = appliedCoupon ? Math.round((subtotal + gst) * (appliedCoupon.pct / 100)) : 0;
+  const discountAmt = appliedCoupon && appliedCoupon.pct ? Math.round((subtotal + gst) * (appliedCoupon.pct / 100)) : 0;
+  const shipping    = appliedCoupon && appliedCoupon.type === "FREE_SHIPPING" ? 0 : 80;
   const grand       = subtotal + gst + shipping - discountAmt;
 
-  const applyCoupon = () => {
+  const applyCoupon = async () => {
     const code = couponInput.trim().toUpperCase();
-    if (COUPONS[code]) {
-      setAppliedCoupon(COUPONS[code]);
-      setCouponMsg({ text: `${COUPONS[code].label} applied!`, ok: true });
-    } else {
+    if (!code) return;
+    try {
+      const res = await api.post("/coupons/apply", { code });
+      if (res.data.success) {
+        setAppliedCoupon({
+          code,
+          pct: res.data.discountPercentage,
+          type: res.data.type,
+          label: `${code} — ${res.data.type === "FREE_SHIPPING" ? "FREE SHIPPING" : res.data.discountPercentage + "% OFF"}`
+        });
+        setCouponMsg({ text: `Coupon applied!`, ok: true });
+      }
+    } catch (error) {
       setAppliedCoupon(null);
-      setCouponMsg({ text: "Invalid coupon code.", ok: false });
+      setCouponMsg({ text: error.response?.data?.message || "Invalid coupon code.", ok: false });
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import { useAuth } from "../context/AuthContext";
 import { Package } from "lucide-react";
@@ -12,14 +12,12 @@ const getNavLinks = (user) => {
     ["/about", "About"],
     ["/contact", "Contact"],
     ["/products", "Products"],
-    ["/products?filter=top", "Top Trends"],
     ["/brands", "Brands"],
   ];
   if (user) {
     links.push(["/orders", "Track Order", true]);
   }
   links.push(["/products?category=ethnic", "Ethnic Wear"]);
-  links.push(["/faq", "FAQ"]);
   return links;
 };
 
@@ -53,6 +51,7 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen]   = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate    = useNavigate();
+  const location    = useLocation();
   const profileRef  = useRef(null);
 
   const displayUser = authUser;
@@ -147,14 +146,17 @@ export default function Navbar() {
 
             {/* ── Desktop / Tablet center links ── */}
             <ul className="nb-links">
-              {getNavLinks(displayUser).slice(0, displayUser ? 8 : 7).map(([to, label, hasIcon]) => (
+              {getNavLinks(displayUser).slice(0, displayUser ? 8 : 7).map(([to, label, hasIcon]) => {
+                const isActive = location.pathname === to.split("?")[0];
+                return (
                 <li key={to}>
-                  <button className="nb-link" onClick={() => goTo(to)} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <button className="nb-link" onClick={() => goTo(to)} style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: isActive ? "#2F2F2F" : undefined, fontWeight: isActive ? "700" : undefined }}>
                     {hasIcon && <Package size={15} style={{ verticalAlign: "middle" }} />}
                     {label}
                   </button>
                 </li>
-              ))}
+                );
+              })}
             </ul>
 
             {/* ── Right actions ── */}
@@ -293,12 +295,15 @@ export default function Navbar() {
         </div>
 
         <nav className="nb-drawer-nav">
-          {getNavLinks(displayUser).map(([to, label, hasIcon]) => (
-            <button key={to} className="nb-drawer-link" onClick={() => goTo(to)} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {getNavLinks(displayUser).map(([to, label, hasIcon]) => {
+            const isActive = location.pathname === to.split("?")[0];
+            return (
+            <button key={to} className="nb-drawer-link" onClick={() => goTo(to)} style={{ display: "flex", alignItems: "center", gap: "10px", background: isActive ? "#FAF2F3" : undefined, color: isActive ? "#2F2F2F" : undefined }}>
               {hasIcon && <Package size={16} />}
               {label}
             </button>
-          ))}
+            );
+          })}
         </nav>
 
         <hr className="nb-drawer-divider" />
