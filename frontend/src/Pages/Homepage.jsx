@@ -174,7 +174,7 @@ export default function Homepage() {
           <div className="products-grid">
             {bestSellers.length === 0
               ? <p style={{ color: "#aaa", padding: "20px 0" }}>No products yet. Check back soon!</p>
-              : bestSellers.map(p => <ProductCard key={p._id} product={p} />)
+              : bestSellers.map(p => <ProductCard key={p._id} product={p} isHomepage={true} />)
             }
           </div>
         </section>

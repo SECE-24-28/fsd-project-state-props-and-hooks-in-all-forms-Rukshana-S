@@ -8,6 +8,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.17.0",
+    "cross-env": "^10.1.0",
     "lucide-react": "^1.17.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
@@ -18,7 +19,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node scripts/freePort.js && cross-env PORT=3000 react-scripts start",
     "build": "react-scripts build && node scripts/copyRedirects.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

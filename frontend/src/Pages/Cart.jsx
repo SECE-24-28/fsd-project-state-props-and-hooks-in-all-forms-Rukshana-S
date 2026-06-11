@@ -99,9 +99,9 @@ export default function Cart() {
                     </div>
                     <span className="cart-item-unit-price">₹{Number(item.price).toLocaleString()} / piece</span>
                   </div>
-                  <div className="cart-item-qty-adjuster">
-                    <button className="cart-item-adjust-btn" onClick={() => updateQty(item._id, (item.quantity || 1) - 1)}>−</button>
-                    <span className="cart-item-qty-val">{item.quantity || 1}</span>
+                  <div className="cart-item-qty-adjuster" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <button className="cart-item-adjust-btn" onClick={() => { if ((item.quantity || 1) <= 1) { removeFromCart(item._id); } else { updateQty(item._id, (item.quantity || 1) - 1); } }}>−</button>
+                    <span className="cart-item-qty-val" style={{ margin: "0 8px", fontWeight: "600" }}>{item.quantity || 1}</span>
                     <button className="cart-item-adjust-btn" onClick={() => updateQty(item._id, (item.quantity || 1) + 1)}>+</button>
                   </div>
                   <div className="cart-item-price-actions">

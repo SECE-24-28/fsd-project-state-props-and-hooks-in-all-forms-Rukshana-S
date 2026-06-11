@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import { ShoppingBag } from "lucide-react";
 
-export default function ProductCard({ product }) {
-  const { addToCart, addToWishlist, removeFromWishlist, wishlistItems } = useStore();
+export default function ProductCard({ product, isHomepage }) {
+  const { addToCart, addToWishlist, removeFromWishlist, wishlistItems, cartItems, updateQty, removeFromCart } = useStore();
   const navigate = useNavigate();
 
   const pid       = product._id || product.id;
@@ -12,6 +12,10 @@ export default function ProductCard({ product }) {
   const image     = (typeof v0img === "object" ? v0img?.url : v0img) || "/placeholder-product.png";
   const price     = Number(product.price) || 0;
   const isWishlisted = wishlistItems.some(i => (i.productId?._id || i.productId) === pid);
+
+  const cartItem = cartItems?.find(
+    item => (item.productId?._id || item.productId || item._id || item.id) === pid
+  );
 
   const goToProduct = () => { navigate(`/product/${pid}`); window.scrollTo(0, 0); };
 
@@ -39,9 +43,17 @@ export default function ProductCard({ product }) {
         <div className="product-card-pricing">
           <span className="product-card-price">₹{price.toLocaleString()}</span>
         </div>
-        <button className="product-card-btn" onClick={() => addToCart(product, 1, (product.sizes || [])[0] || "")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-          <ShoppingBag size={16} /> Add to Cart
-        </button>
+        {isHomepage && cartItem ? (
+          <div className="product-card-btn qty-controls" style={{ display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "space-between", padding: "0 16px", cursor: "default" }}>
+            <button onClick={(e) => { e.stopPropagation(); if (cartItem.quantity > 1) updateQty(cartItem._id || cartItem.id, cartItem.quantity - 1); else removeFromCart(cartItem._id || cartItem.id); }} style={{ background: "transparent", color: "inherit", fontSize: "1.2rem", cursor: "pointer", padding: "10px", border: "none", outline: "none", flex: 1, textAlign: "left" }}>−</button>
+            <span style={{ fontWeight: "600", fontSize: "1rem" }}>{cartItem.quantity}</span>
+            <button onClick={(e) => { e.stopPropagation(); updateQty(cartItem._id || cartItem.id, (cartItem.quantity || 1) + 1); }} style={{ background: "transparent", color: "inherit", fontSize: "1.2rem", cursor: "pointer", padding: "10px", border: "none", outline: "none", flex: 1, textAlign: "right" }}>+</button>
+          </div>
+        ) : (
+          <button className="product-card-btn" onClick={(e) => { e.stopPropagation(); addToCart(product, 1, (product.sizes || [])[0] || ""); }} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px", width: "100%" }}>
+            <ShoppingBag size={16} /> Add to Cart
+          </button>
+        )}
       </div>
     </div>
   );
