@@ -1,12 +1,25 @@
 import React, { useState } from "react";
+import api from "../services/api";
+import { toast } from "react-toastify";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email) { setSubmitted(true); setEmail(""); }
+    if (email) {
+      try {
+        const res = await api.post("/newsletter/subscribe", { email });
+        if (res.data.success) {
+          toast.success("⭐ Welcome to WEARLY Premium Membership!");
+          setSubmitted(true);
+          setEmail("");
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Something went wrong!");
+      }
+    }
   };
 
   return (

@@ -46,6 +46,9 @@ const OrderSchema = new mongoose.Schema(
       code: { type: String, default: "" },
       type: { type: String, default: "" },
     },
+    receiptNumber:  { type: String, default: "" },
+    shippingCharge: { type: Number, default: 0 },
+    gstAmount:      { type: Number, default: 0 },
   },
   { timestamps: true }
 );

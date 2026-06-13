@@ -15,17 +15,19 @@ const UserSchema = new mongoose.Schema(
     profileImage:     { type: String, default: "" },
     resetOtp:         { type: String },
     resetOtpExpire:   { type: Date },
+    isPremium:        { type: Boolean, default: false },
+    premiumSince:     { type: Date },
     addresses: [
       {
+        label:       { type: String, default: "Home" },
         name:        { type: String },
-        fullName:    { type: String },
         phone:       { type: String },
         street:      { type: String },
-        addressLine: { type: String },
         city:        { type: String },
         state:       { type: String },
         pincode:     { type: String },
-        isDefault: { type: Boolean, default: false }
+        country:     { type: String, default: "India" },
+        isDefault:   { type: Boolean, default: false }
       }
     ]
   },

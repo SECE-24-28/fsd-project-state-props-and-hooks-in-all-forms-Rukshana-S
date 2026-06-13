@@ -278,6 +278,79 @@ const getApprovedBrands = async (req, res) => {
   }
 };
 
+const deleteAccount = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    res.status(200).json({ success: true, message: "Account deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Error deleting account", error: err.message });
+  }
+};
+
+// --- ADDRESS MANAGEMENT ---
+
+const getAddresses = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    res.status(200).json({ success: true, data: user.addresses });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
+const addAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    const newAddress = req.body;
+    if (newAddress.isDefault) {
+      user.addresses.forEach(addr => addr.isDefault = false);
+    }
+    user.addresses.push(newAddress);
+    await user.save();
+    res.status(201).json({ success: true, data: user.addresses });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to add address", error: err.message });
+  }
+};
+
+const updateAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    const addressId = req.params.id;
+    const updateData = req.body;
+    
+    if (updateData.isDefault) {
+      user.addresses.forEach(addr => addr.isDefault = false);
+    }
+    
+    const address = user.addresses.id(addressId);
+    if (!address) return res.status(404).json({ success: false, message: "Address not found" });
+    
+    Object.assign(address, updateData);
+    await user.save();
+    res.status(200).json({ success: true, data: user.addresses });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to update address", error: err.message });
+  }
+};
+
+const deleteAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    const addressId = req.params.id;
+    user.addresses = user.addresses.filter(addr => addr._id.toString() !== addressId);
+    await user.save();
+    res.status(200).json({ success: true, data: user.addresses });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to delete address", error: err.message });
+  }
+};
+
 module.exports = { 
   registerUser, 
   loginUser, 
@@ -286,5 +359,10 @@ module.exports = {
   forgotPassword, 
   verifyOTP,
   resetPassword, 
-  getApprovedBrands 
+  getApprovedBrands,
+  deleteAccount,
+  getAddresses,
+  addAddress,
+  updateAddress,
+  deleteAddress
 };

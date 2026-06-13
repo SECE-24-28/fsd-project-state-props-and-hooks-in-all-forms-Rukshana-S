@@ -1,188 +1,132 @@
-# WEARLY - Premium Multi-Vendor Clothing & Fashion Marketplace
+<div align="center">
+  <h1>✨ WEARLY</h1>
+  <p><strong>A Premium Multi-Vendor Fashion & Clothing Marketplace</strong></p>
+  
+  [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](#)
+  [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](#)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](#)
+  [![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)](#)
+</div>
 
-WEARLY is a state-of-the-art multi-vendor e-commerce platform designed to bring independent verified clothing merchants and design boutiques together in a single premium storefront. Modeled after premium storefront architectures like Shopify, Amazon, and Myntra, WEARLY features role-based panels, Razorpay sandbox payment flows, real-time Nodemailer email updates, Cloudinary image hosting, interactive review modules, and aggregation sales dashboards.
+<br />
+
+WEARLY is a state-of-the-art, fully responsive multi-vendor e-commerce platform designed to bring independent clothing merchants and luxury design boutiques together under one premium storefront.
+
+Modeled after industry-leading platforms like Myntra, Shopify, and SSENSE, WEARLY is built on the **MERN** stack and features role-based access control, secure Razorpay payments, real-time email notifications, Cloudinary image hosting, interactive reviews, and complex data-aggregation sales dashboards.
 
 ---
 
-## 🚀 Features
+## 🌟 Key Features
 
 ### 🛍 Customer Experience
-- **Interactive Catalog**: Search by name, brand, store, or category with instant debounced queries and advanced database sorting options (Newest, Popularity, Price Asc/Desc, Best Rated).
-- **Responsive Media Gallery**: Interactive hover zoom effect on main images and smooth thumbnail transitions.
-- **Cart & Wishlist**: Real-time item additions, size/color selections, price recalculation, and stock restriction safeguards.
-- **Coupons**: Flat and percentage-based discounts applied on the checkout page.
-- **Payment Gateway**: Sandbox payment integration utilizing Razorpay SDK with secure backend HMAC-SHA256 signature verification.
-- **Addresses Profile**: Multiple saved addresses management.
-- **Order Timeline Tracker**: Horizontal tracking interface showing status stages (`Pending`, `Processing`, `Shipped`, `Delivered`).
-- **Product Reviews**: Customer ratings (1-5 stars) and comment threads with dynamic pre-aggregated product scores.
+- **Luxury Responsive UI**: A meticulously crafted pink/white luxury aesthetic featuring CSS Grid layouts that flawlessly scale from desktop to tablet to mobile.
+- **Interactive Catalog & Filters**: Search by name, brand, store, or category with instant debounced queries. Advanced sorting options include Newest, Popularity, Price Asc/Desc, and Best Rated.
+- **Dynamic Cart & Wishlist**: Real-time state management using React Context. Features elegant increment/decrement quantity controllers, size/color selections, and stock restriction safeguards.
+- **Coupons & Offers**: Intelligent checkout system supporting flat and percentage-based discounts.
+- **Secure Payment Gateway**: End-to-end sandbox payment integration using the Razorpay Node SDK with secure backend HMAC-SHA256 signature verification.
+- **Order Tracking**: Beautiful timeline tracker visualizing order status stages (`Pending`, `Processing`, `Shipped`, `Delivered`).
+- **Product Reviews & Ratings**: Customers can leave 1-5 star ratings and comments, instantly reflected in dynamic pre-aggregated product scores.
 
-### 🏪 Store Admin Dashboard
-- **Product Inventory Manager**: CRUD product items (up to 5 images per product with drag/reorder/delete options, sizes, and colors).
-- **Sales Analytics**: MongoDB aggregation pipelines filtering orders, revenues, and buyers strictly for the merchant's products.
-- **CSV Data Export**: Export local catalogs, customer segments, and order lists directly to CSV format.
+### 🏪 Store Admin Dashboard (Vendors)
+- **Inventory Manager**: Full CRUD capabilities for products. Supports up to 5 images per product (via Cloudinary), custom sizes, and colors.
+- **Sales Analytics**: Deep insights generated via MongoDB aggregation pipelines. Vendors can securely view their own revenues, total orders, and customer segments.
+- **Data Export**: Export catalog lists, customer details, and order history directly to CSV format for external accounting.
 
 ### 👑 Super Admin Platform Control
-- **Merchant Onboarding**: Approve/reject pending store registrations with automatic email status alerts.
-- **Global Dashboards**: Charts tracking category breakdowns, monthly revenue growths, store revenues comparisons, and platform registrations using Recharts.
-- **Auditing**: Global monitoring of orders, customers, and active shops.
+- **Merchant Onboarding**: Complete control over the platform ecosystem. Approve or reject pending store registrations with automatic Nodemailer email status alerts.
+- **Global Dashboards**: High-level visual analytics using **Recharts** to track category breakdowns, monthly revenue growth, top-performing stores, and platform registrations.
+- **Platform Auditing**: Global monitoring and moderation capabilities across all orders, customers, and active shops.
 
 ---
 
-## 🛠 Tech Stack
+## 🛠 Technology Stack
 
-- **Frontend**: React (Context API, Axios, Recharts, React Router v7)
-- **Backend**: Node.js, Express
-- **Database**: MongoDB Atlas (Mongoose ODM)
-- **Email System**: Nodemailer
-- **Payments**: Razorpay Node SDK (sandbox)
-- **Image Storage**: Cloudinary SDK (Direct Base64 upload stream)
-- **Security**: Helmet, Express-Rate-Limit, CORS dynamic mapping, BcryptJS, JWT
+### Frontend Architecture
+- **Framework**: React 18 (with React Router v7)
+- **State Management**: React Context API (Redux-like StoreContext)
+- **Styling**: Vanilla CSS with modern CSS Variables, Flexbox, and Grid (Zero external CSS frameworks for maximum customization)
+- **Icons**: Lucide React
+- **Data Visualization**: Recharts
+- **Alerts**: React Toastify
 
----
-
-## 📂 Folder Structure
-
-```
-ecommerce/
-├── backend/
-│   ├── Controllers/
-│   │   ├── CartController.js
-│   │   ├── CouponController.js
-│   │   ├── OrderController.js
-│   │   ├── PaymentController.js
-│   │   ├── ProductController.js
-│   │   ├── ReviewController.js
-│   │   ├── StoreAdminController.js
-│   │   ├── SuperAdminController.js
-│   │   └── UserController.js
-│   ├── Middlewares/
-│   │   └── errorMiddleware.js
-│   ├── Models/
-│   │   ├── CartModel.js
-│   │   ├── CouponModel.js
-│   │   ├── NotificationModel.js
-│   │   ├── OrderModel.js
-│   │   ├── ProductModel.js
-│   │   ├── ReviewModel.js
-│   │   └── UserModel.js
-│   ├── Routes/
-│   │   ├── CartRoutes.js
-│   │   ├── CouponRoutes.js
-│   │   ├── OrderRoutes.js
-│   │   ├── PaymentRoutes.js
-│   │   ├── ProductRoutes.js
-│   │   ├── ReviewRoutes.js
-│   │   ├── StoreAdminRoutes.js
-│   │   ├── SuperAdminRoutes.js
-│   │   └── UserRoutes.js
-│   ├── Utils/
-│   │   ├── cloudinary.js
-│   │   ├── generateToken.js
-│   │   ├── sendEmail.js
-│   │   ├── verifyToken.js
-│   │   └── seedSuperAdmin.js
-│   └── Server.js
-└── frontend/
-    ├── public/
-    │   ├── index.html
-    │   ├── manifest.json
-    │   └── service-worker.js
-    └── src/
-        ├── Components/
-        │   ├── Navbar.jsx
-        │   ├── Footer.jsx
-        │   └── ProductCard.jsx
-        ├── Pages/
-        │   ├── Homepage.jsx
-        │   ├── Products.jsx
-        │   ├── ProductDetails.jsx
-        │   ├── Checkout.jsx
-        │   ├── OrderSuccess.jsx
-        │   └── Register.jsx
-        ├── context/
-        │   ├── AuthContext.jsx
-        │   └── StoreContext.jsx
-        ├── services/
-        │   └── api.js
-        ├── serviceWorkerRegistration.js
-        └── index.js
-```
+### Backend Architecture
+- **Runtime**: Node.js & Express.js
+- **Database**: MongoDB Atlas with Mongoose ODM
+- **Authentication**: JWT (JSON Web Tokens) & BcryptJS password hashing
+- **Security**: Helmet, Express-Rate-Limit, CORS dynamic mapping
+- **Media Storage**: Cloudinary SDK (Direct Base64 upload streams)
+- **Email Service**: Nodemailer
+- **Payments**: Razorpay Node SDK
 
 ---
 
-## 🔧 Installation & Local Run
+## 🚀 Getting Started
 
 ### 1. Prerequisites
-Install [Node.js](https://nodejs.org) and run a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster.
+You will need [Node.js](https://nodejs.org) installed on your machine and access to a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster.
 
-### 2. Backend Configurations
-Navigate to `backend/` and run:
+### 2. Backend Setup
+Navigate to the `backend/` directory and install the dependencies:
 ```bash
+cd backend
 npm install
 ```
-Create a `.env` file inside `backend/`:
+
+Create a `.env` file inside the `backend/` directory with the following variables:
 ```env
 MONGO_URL=your_mongodb_atlas_url
 JWT_SECRET=your_jwt_secret_phrase
 CLOUDINARY_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-RAZORPAY_KEY_ID=rzp_test_SyN7nvYNEU6ojM
-RAZORPAY_SECRET=OFqv5uf8GckNN0widblySMBP
+RAZORPAY_KEY_ID=your_razorpay_key
+RAZORPAY_SECRET=your_razorpay_secret
 EMAIL_USER=your_nodemailer_email_username
 EMAIL_PASS=your_nodemailer_email_password
 FRONTEND_URL=http://localhost:3000
 ```
-Seed the Super Admin account:
+
+Seed the initial Super Admin account and start the server:
 ```bash
 npm run seed
-```
-Start the server:
-```bash
 npm start
 ```
 
-### 3. Frontend Configurations
-Navigate to `frontend/` and run:
+### 3. Frontend Setup
+Navigate to the `frontend/` directory and install the dependencies:
 ```bash
+cd frontend
 npm install
 ```
-Create a `.env` file inside `frontend/`:
+
+Create a `.env` file inside the `frontend/` directory:
 ```env
 REACT_APP_API_URL=http://localhost:5000/api
 ```
-Start the React App:
+
+Start the React development server:
 ```bash
 npm start
 ```
-
----
-
-## 🔗 Key API Endpoints
-
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| **POST** | `/api/users/register` | Register customer / store-admin | None |
-| **POST** | `/api/users/login` | Login user & fetch token | None |
-| **GET** | `/api/products` | Query products catalog | None |
-| **POST** | `/api/reviews` | Post/update customer rating | Customer |
-| **POST** | `/api/coupons/apply` | Validate coupon discounts | Customer |
-| **POST** | `/api/payment/create-order` | Generate Razorpay transaction order | Customer |
-| **POST** | `/api/payment/verify` | Verify signatures & create order record | Customer |
-| **GET** | `/api/storeadmin/analytics` | Aggregated revenue/order statistics | Store Admin |
-| **PUT** | `/api/superadmin/approve/:id` | Approve store registration application | Super Admin |
 
 ---
 
 ## ☁️ Deployment Guide
 
-### Backend on Render
-1. Create a Web Service on Render.
-2. Link your GitHub repository.
-3. Configure the start command: `node backend/Server.js` or `npm start` (set root directory to `backend`).
-4. Inject your environment variables inside the Environment settings on Render.
+### Backend (Render / Heroku)
+1. Create a Web Service and link this repository.
+2. Set the Root Directory to `backend/`.
+3. Set the Build Command to `npm install` and the Start Command to `npm start`.
+4. Inject all backend `.env` variables into the host's Environment Variables settings.
 
-### Frontend on Netlify
-1. Create a Site on Netlify from GitHub.
-2. Set build command: `npm run build` (build directory `frontend/build`).
-3. Add environment variable: `REACT_APP_API_URL` pointing to your Render backend URL `/api`.
+### Frontend (Netlify / Vercel)
+1. Create a new site from your Git repository.
+2. Set the Base Directory to `frontend/`.
+3. Set the Build Command to `npm run build` and the Publish Directory to `frontend/build`.
+4. Add the `REACT_APP_API_URL` environment variable pointing to your deployed backend URL (e.g., `https://your-backend-url.onrender.com/api`).
+
+---
+
+<div align="center">
+  <p>Built with ❤️ for luxury e-commerce experiences.</p>
+</div>

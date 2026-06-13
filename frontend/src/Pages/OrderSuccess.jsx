@@ -202,6 +202,9 @@ export default function OrderSuccess() {
                 <button className="btn-primary" onClick={() => { navigate(`/orders/${orderId}`); window.scrollTo(0,0); }}>
                   Track Order
                 </button>
+                <button className="btn-secondary" onClick={() => { navigate(`/receipt/${orderId}`); window.scrollTo(0,0); }}>
+                  View Receipt
+                </button>
                 <button className="btn-secondary" onClick={() => { navigate("/orders"); window.scrollTo(0,0); }}>
                   View Orders
                 </button>

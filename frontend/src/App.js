@@ -71,6 +71,8 @@ const Brands = React.lazy(() => import("./Pages/Brands"));
 const MyOrders = React.lazy(() => import("./Pages/MyOrders"));
 const OrderTracking = React.lazy(() => import("./Pages/OrderTracking"));
 const SpinWheel = React.lazy(() => import("./Pages/SpinWheel"));
+const Profile = React.lazy(() => import("./Pages/Profile"));
+const Receipt = React.lazy(() => import("./Pages/Receipt"));
 
 const NO_CHROME = ["/login", "/register", "/forgot-password", "/reset-password"];
 
@@ -104,6 +106,8 @@ function StoreLayout() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/my-messages" element={<ProtectedRoute><MyMessages /></ProtectedRoute>} />
           <Route path="/spin-wheel" element={<ProtectedRoute><SpinWheel /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/receipt/:id" element={<ProtectedRoute><Receipt /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </React.Suspense>

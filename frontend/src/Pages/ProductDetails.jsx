@@ -10,7 +10,7 @@ import "../Assets/Css/products.css";
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, addToCart, addToWishlist, removeFromWishlist, wishlistItems } = useStore();
+  const { products, addToCart, addToWishlist, removeFromWishlist, wishlistItems, cartItems, updateQty, removeFromCart } = useStore();
   const { user } = useAuth();
   const reviewsRef = useRef(null);
 
@@ -42,6 +42,7 @@ export default function ProductDetails() {
   };
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setLoading(true);
     setSelectedVariant(0);
     setSelectedImage(0);
@@ -120,6 +121,23 @@ export default function ProductDetails() {
     const colorLabel = currentVariant?.color || "";
     addToCart(product, qty, selectedSize || (product.sizes || [])[0] || "", colorLabel);
     if (buyNow) navigate("/cart");
+  };
+
+  const selectedSizeVal = selectedSize || (product.sizes || [])[0] || "";
+  const colorLabelVal = currentVariant?.color || "";
+  const cartItem = cartItems.find(item => 
+    (item.productId?._id || item.productId || item.id) === pid &&
+    item.size === selectedSizeVal &&
+    item.color === colorLabelVal
+  );
+
+  const handleDecreaseQty = () => {
+    if (!cartItem) return;
+    if (cartItem.quantity <= 1) {
+      removeFromCart(cartItem._id);
+    } else {
+      updateQty(cartItem._id, cartItem.quantity - 1);
+    }
   };
 
   const handleMouseMove = (e) => {
@@ -292,13 +310,21 @@ export default function ProductDetails() {
 
               {/* ── CTAs ── */}
               <div className="pd-cta-row">
-                <button
-                  className="pd-cta-cart"
-                  disabled={product.stock === 0}
-                  onClick={() => handleAddToCart(false)}
-                >
-                  <ShoppingBag size={18} /> Add To Cart
-                </button>
+                {cartItem ? (
+                  <div className="qty-controls" style={{ flex: 1 }}>
+                    <button onClick={handleDecreaseQty}>−</button>
+                    <span>{cartItem.quantity}</span>
+                    <button onClick={() => updateQty(cartItem._id, cartItem.quantity + 1)}>+</button>
+                  </div>
+                ) : (
+                  <button
+                    className="pd-cta-cart"
+                    disabled={product.stock === 0}
+                    onClick={() => handleAddToCart(false)}
+                  >
+                    <ShoppingBag size={18} /> Add To Cart
+                  </button>
+                )}
                 <button
                   className="pd-cta-buy"
                   disabled={product.stock === 0}

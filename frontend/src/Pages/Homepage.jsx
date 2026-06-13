@@ -186,7 +186,7 @@ export default function Homepage() {
               <span className="hero-subtitle" style={{ color: "var(--text-light)" }}>Limited Time Boutique Sale</span>
               <h2 className="offer-banner-title">Mega Fashion Sale — Up to 70% OFF</h2>
               <p className="offer-banner-subtitle">Upgrade your luxury collection with beautiful blush tones, linen shirts, and ornate silk drapes at exclusive prices.</p>
-              <button className="btn-primary" onClick={() => goTo("/products")}>Unlock Secret Offer</button>
+              <button className="btn-primary" onClick={() => goTo("/spin-wheel")}>Unlock Secret Offer</button>
             </div>
             <div className="hero-image-card" style={{ maxWidth: "380px", width: "100%" }}>
               <div className="hero-image-inner" style={{ height: "260px" }}>

@@ -476,9 +476,9 @@ a.nb-drawer-contact-item:hover { color: #E9D5D6; }
 }
 
 /* ============================================================
-   TABLET  769px – 1024px
+   TABLET  993px – 1200px
    ============================================================ */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 993px) and (max-width: 1200px) {
   .nb-links { gap: 14px; }
   .nb-link { font-size: 0.84rem; }
   .nb-desktop-auth { display: none !important; }
@@ -489,9 +489,9 @@ a.nb-drawer-contact-item:hover { color: #E9D5D6; }
 }
 
 /* ============================================================
-   MOBILE  ≤ 768px
+   MOBILE  ≤ 992px
    ============================================================ */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .nb-header { padding: 10px 0; }
   .nb-container { padding: 0 16px; }
 
@@ -508,7 +508,7 @@ a.nb-drawer-contact-item:hover { color: #E9D5D6; }
   .nb-tablet-auth  { display: none !important; }
   .nb-wishlist     { display: none !important; }
 
-  .nb-hamburger { display: flex; }
+  .nb-hamburger { display: flex !important; }
 
   .nb-logo { font-size: 1.5rem; }
   .nb-actions { gap: 6px; }

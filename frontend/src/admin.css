@@ -2190,9 +2190,6 @@ body::before {
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  /* background applied via JS */
-}
 
 /* ── Page content area ── */
 .adm-new-content,
@@ -2453,9 +2450,6 @@ body {
 }
 
 /* ── Login page ── */
-.adm-login-page {
-  /* background applied via JS */
-}
 
 .adm-login-card {
   background: #ffffff;
@@ -2669,5 +2663,38 @@ body {
 
   .adm-btn-group {
     flex-wrap: wrap;
+  }
+}
+
+/* ============================================
+   ADMIN MESSAGES LAYOUT
+   ============================================ */
+.adm-msg-layout {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+.adm-msg-sidebar {
+  flex: 0 0 320px;
+}
+.adm-msg-chat {
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .adm-msg-layout {
+    flex-direction: column;
+    min-height: 800px;
+  }
+  .adm-msg-sidebar {
+    flex: none;
+    width: 100%;
+    max-height: 250px;
+  }
+  .adm-msg-chat {
+    flex: none;
+    width: 100%;
+    min-height: 500px;
   }
 }

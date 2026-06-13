@@ -43,14 +43,55 @@ export default function ProductCard({ product, isHomepage }) {
         <div className="product-card-pricing">
           <span className="product-card-price">₹{price.toLocaleString()}</span>
         </div>
-        {isHomepage && cartItem ? (
-          <div className="product-card-btn qty-controls" style={{ display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "space-between", padding: "0 16px", cursor: "default" }}>
-            <button onClick={(e) => { e.stopPropagation(); if (cartItem.quantity > 1) updateQty(cartItem._id || cartItem.id, cartItem.quantity - 1); else removeFromCart(cartItem._id || cartItem.id); }} style={{ background: "transparent", color: "inherit", fontSize: "1.2rem", cursor: "pointer", padding: "10px", border: "none", outline: "none", flex: 1, textAlign: "left" }}>−</button>
-            <span style={{ fontWeight: "600", fontSize: "1rem" }}>{cartItem.quantity}</span>
-            <button onClick={(e) => { e.stopPropagation(); updateQty(cartItem._id || cartItem.id, (cartItem.quantity || 1) + 1); }} style={{ background: "transparent", color: "inherit", fontSize: "1.2rem", cursor: "pointer", padding: "10px", border: "none", outline: "none", flex: 1, textAlign: "right" }}>+</button>
+        {cartItem ? (
+          <div className="qty-controls">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+
+                if (cartItem.quantity > 1) {
+                  updateQty(
+                    cartItem._id || cartItem.id,
+                    cartItem.quantity - 1
+                  );
+                } else {
+                  removeFromCart(
+                    cartItem._id || cartItem.id
+                  );
+                }
+              }}
+            >
+              −
+            </button>
+
+            <span>{cartItem.quantity}</span>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+
+                updateQty(
+                  cartItem._id || cartItem.id,
+                  cartItem.quantity + 1
+                );
+              }}
+            >
+              +
+            </button>
           </div>
         ) : (
-          <button className="product-card-btn" onClick={(e) => { e.stopPropagation(); addToCart(product, 1, (product.sizes || [])[0] || ""); }} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px", width: "100%" }}>
+          <button
+            className="product-card-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+
+              addToCart(
+                product,
+                1,
+                (product.sizes || [])[0] || ""
+              );
+            }}
+          >
             <ShoppingBag size={16} /> Add to Cart
           </button>
         )}

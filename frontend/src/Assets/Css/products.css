@@ -1139,3 +1139,28 @@
   .pd-variant-card { width: 52px; height: 64px; }
   .pd-rating-row { gap: 8px; }
 }
+
+/* ── Quantity Controls for Product Details ── */
+.qty-controls {
+ width: 100%;
+ height: 58px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 0 28px;
+ border: 1px solid #f1e4e4;
+ border-radius: 18px;
+ background: #fff8f8;
+}
+
+.qty-controls button {
+ background: none;
+ border: none;
+ font-size: 28px;
+ cursor: pointer;
+}
+
+.qty-controls span {
+ font-size: 22px;
+ font-weight: 600;
+}

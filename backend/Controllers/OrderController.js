@@ -95,6 +95,9 @@ const createOrder = async (req, res) => {
       paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
       sellerName:    topSellerName,
       appliedCoupon: appliedCouponData,
+      receiptNumber: "WRL" + Date.now(),
+      shippingCharge: req.body.shippingCharge || (amount > 999 ? 0 : 50),
+      gstAmount: req.body.gstAmount || Math.round(amount * 0.18),
     });
 
     const Cart = require("../Models/CartModel");

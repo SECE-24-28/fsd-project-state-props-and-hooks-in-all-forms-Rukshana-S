@@ -39,7 +39,7 @@ body {
 
 #root { display: flex; flex-direction: column; min-height: 100vh; }
 
-img { display: block; width: 100%; height: auto; }
+img { display: block; width: 100%; height: auto; object-fit: cover; }
 
 a { color: inherit; text-decoration: none; transition: var(--transition-fast); }
 
@@ -326,7 +326,7 @@ button, input, select, textarea {
 /* Trends & Ethnic grids */
 .trends-grid, .ethnic-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
@@ -390,7 +390,7 @@ button, input, select, textarea {
 
 .brands-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
@@ -432,10 +432,9 @@ button, input, select, textarea {
 
 .brand-desc { font-size: 0.84rem; color: var(--text-light); }
 
-/* Products grid */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-bottom: 70px;
 }
@@ -551,6 +550,7 @@ button, input, select, textarea {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
@@ -720,20 +720,36 @@ button, input, select, textarea {
 .faq-content p { color: var(--text-light); font-size: 0.9rem; line-height: 1.6; }
 
 /* Responsive */
-@media (max-width: 1200px) {
-  .trends-grid, .ethnic-grid, .brands-grid { grid-template-columns: repeat(3, 1fr); }
-  .products-grid { grid-template-columns: repeat(3, 1fr); }
+.qty-controls {
+    width: 100%;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    background: #fff8f8;
+    border: 1px solid #f4e6e6;
+    border-radius: 18px;
+    font-weight: 600;
+}
+.qty-controls button {
+    border: none;
+    background: none;
+    font-size: 28px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #222;
+}
+.qty-controls span {
+    font-size: 20px;
+    font-weight: 600;
 }
 
 @media (max-width: 992px) {
+  .trends-grid, .ethnic-grid, .brands-grid, .products-grid { grid-template-columns: repeat(2, 1fr); }
   .hero-banner { grid-template-columns: 1fr; padding: 40px; }
   .hero-image-wrap { height: 300px; }
   .newsletter-section { grid-template-columns: 1fr; padding: 30px; }
-}
-
-@media (max-width: 768px) {
-  .trends-grid, .ethnic-grid, .brands-grid { grid-template-columns: repeat(2, 1fr); }
-  .products-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 576px) {
@@ -742,4 +758,7 @@ button, input, select, textarea {
   .hero-cta-btn { width: 100%; text-align: center; }
   .offer-banner { padding: 30px 24px; }
   .newsletter-section { padding: 24px; }
+}
+@media (max-width: 480px) {
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
 }

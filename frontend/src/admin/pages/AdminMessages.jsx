@@ -52,10 +52,10 @@ export default function AdminMessages() {
         <h2 className="adm-title">Customer Support Tickets</h2>
       </div>
 
-      <div style={{ display: "flex", gap: "20px", flex: 1, minHeight: 0 }}>
+      <div className="adm-msg-layout">
         
         {/* Left Panel */}
-        <div className="adm-card" style={{ flex: "0 0 320px", display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
+        <div className="adm-card adm-msg-sidebar" style={{ display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
           <div style={{ padding: "15px", borderBottom: "1px solid #eee", background: "#f8f9fa", fontWeight: "600" }}>
             All Conversations
           </div>
@@ -96,7 +96,7 @@ export default function AdminMessages() {
         </div>
 
         {/* Right Panel */}
-        <div className="adm-card" style={{ flex: 1, display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
+        <div className="adm-card adm-msg-chat" style={{ display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
           {selectedTicket ? (
             <>
               {/* Chat Header */}

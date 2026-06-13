@@ -253,3 +253,20 @@
   background-color: #e5e7eb;
   color: #4b5563;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .spin-title { font-size: 2rem; }
+  .spin-container { padding: 30px 20px; }
+  .spin-page { padding: 40px 16px; }
+}
+
+@media (max-width: 480px) {
+  .spin-title { font-size: 1.6rem; }
+  .spin-subtitle { font-size: 0.95rem; }
+  .spin-container { padding: 24px 16px; }
+  .spin-btn { padding: 12px 30px; font-size: 1rem; }
+  .reward-card { width: 100%; max-width: 300px; min-height: 200px; padding: 20px; }
+  .spin-modal { padding: 30px 20px; }
+  .coupon-code { font-size: 1.1rem; }
+}

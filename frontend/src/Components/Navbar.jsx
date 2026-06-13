@@ -16,8 +16,8 @@ const getNavLinks = (user) => {
   ];
   if (user) {
     links.push(["/orders", "Track Order", true]);
+    links.push(["/profile", "Profile"]);
   }
-  links.push(["/products?category=ethnic", "Ethnic Wear"]);
   return links;
 };
 
